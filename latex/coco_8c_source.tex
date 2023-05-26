@@ -1,0 +1,90 @@
+\doxysection{coco.\+c}
+\hypertarget{coco_8c_source}{}\label{coco_8c_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00001}00001\ \textcolor{preprocessor}{\#include\ "{}coco.h"{}}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00002}00002\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00003}00003\ \textcolor{comment}{//\ Structure\ of\ a\ task.}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00004}\mbox{\hyperlink{structtask}{00004}}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtask}{task}}\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00005}00005\ \ \ \ \ \textcolor{keyword}{enum}\ task\_status\ status;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00006}00006\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ ctx;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00007}00007\ \ \ \ \ coroutine\ func;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00008}00008\ \};}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00010}00010\ \textcolor{comment}{//\ All\ tasks\ and\ contexts\ must\ be\ kept\ in\ program\ memory.}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00011}00011\ \textcolor{keyword}{static}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtask}{task}}\ tasks[MAX\_TASKS\ +\ 1];}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00012}00012\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00013}00013\ \textcolor{keywordtype}{int}\ add\_task(coroutine\ func,\ \textcolor{keywordtype}{void}\ *args)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00014}00014\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ <=\ MAX\_TASKS;\ ++i)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00015}00015\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tasks[i].status\ ==\ kDead)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00016}00016\ \ \ \ \ \ \ \ \ \ \ \ \ tasks[i].status\ =\ kNew;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00017}00017\ \ \ \ \ \ \ \ \ \ \ \ \ tasks[i].func\ =\ func,}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00018}00018\ \ \ \ \ \ \ \ \ \ \ \ \ tasks[i].ctx\ =\ (\textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}})\{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00019}00019\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .args\ =\ args,}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00020}00020\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .waitStart\ =\ clock(),}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00021}00021\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .handlers\ =\ \{default\_sigint,\ default\_sigstp,\ default\_sigcont\}\};}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00022}00022\ \ \ \ \ \ \ \ \ \ \ \ \ tasks[i].ctx.resumePoint\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00023}00023\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ i;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00024}00024\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00025}00025\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00026}00026\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00027}00027\ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00028}00028\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00029}00029\ \textcolor{keyword}{enum}\ task\_status\ runTask(\textcolor{keywordtype}{int}\ i)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00030}00030\ \ \ \ \ \textcolor{keywordtype}{int}\ ret;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00031}00031\ \ \ \ \ \textcolor{keywordflow}{if}\ ((ret\ =\ setjmp(tasks[i].ctx.caller))\ ==\ 0)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00032}00032\ \ \ \ \ \ \ \ \ ctx\ =\ getContext(i);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00033}00033\ \ \ \ \ \ \ \ \ yieldable\_return(0);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00034}00034\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00035}00035\ \ \ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00036}00036\ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00037}00037\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00038}00038\ \textcolor{keyword}{enum}\ task\_status\ startTask(\textcolor{keywordtype}{int}\ i)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00039}00039\ \ \ \ \ \textcolor{keywordtype}{int}\ ret;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00040}00040\ \ \ \ \ \textcolor{keywordflow}{if}\ ((ret\ =\ setjmp(tasks[i].ctx.caller))\ ==\ 0)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00041}00041\ \ \ \ \ \ \ \ \ ctx\ =\ getContext(i);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00042}00042\ \ \ \ \ \ \ \ \ tasks[i].func();}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00043}00043\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00044}00044\ \ \ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00045}00045\ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00046}00046\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00047}00047\ \textcolor{keywordtype}{void}\ runTasks()\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00048}00048\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ <=\ MAX\_TASKS;\ ++i)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00049}00049\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (tasks[i].status)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00050}00050\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ kYielding:}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00051}00051\ \ \ \ \ \ \ \ \ \ \ \ \ tasks[i].status\ =\ runTask(i);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00052}00052\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00053}00053\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ kNew:}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00054}00054\ \ \ \ \ \ \ \ \ \ \ \ \ tasks[i].status\ =\ startTask(i);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00055}00055\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ kStopped:}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00056}00056\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tasks[i].ctx.sigBits\ \&\ SIG\_MASK(SIGCONT))\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00057}00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tasks[i].status\ =\ runTask(i);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00058}00058\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00059}00059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00060}00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00061}00061\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00062}00062\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00063}00063\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00064}00064\ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00065}00065\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00066}00066\ \textcolor{keyword}{enum}\ task\_status\ getStatus(\textcolor{keywordtype}{int}\ tid)\ \{\ \textcolor{keywordflow}{return}\ tasks[tid].status;\ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00067}00067\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ *getContext(\textcolor{keywordtype}{int}\ tid)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00068}00068\ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{struct}\ \mbox{\hyperlink{structcontext}{context}}\ *)\&tasks[tid].ctx;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00069}00069\ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00070}00070\ }
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00071}00071\ \textcolor{keywordtype}{void}\ \_waitpid(\textcolor{keywordtype}{int}\ tid,\ \textcolor{keywordtype}{int}\ opts,\ \textcolor{keywordtype}{int}\ *exitStatus)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00072}00072\ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00073}00073\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (getStatus(tid)\ ==\ kDone)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00074}00074\ \ \ \ \ \ \ \ \ \ \ \ \ tasks[tid].status\ =\ kDead;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00075}00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(exitStatus)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00076}00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *exitStatus\ =\ getContext(tid)-\/>exitStatus;}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00077}00077\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00078}00078\ \ \ \ \ \ \ \ \ \ \ \ \ yieldable\_return(tid);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00079}00079\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00080}00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (opts\ \&\ WNOHANG)\ \{}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00081}00081\ \ \ \ \ \ \ \ \ \ \ \ \ yieldable\_return(0);}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00082}00082\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00083}00083\ \ \ \ \ \ \ \ \ yield();}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00084}00084\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{coco_8c_source_l00085}00085\ \}}
+
+\end{DoxyCode}

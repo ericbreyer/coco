@@ -1,0 +1,106 @@
+\doxysection{main.\+c}
+\hypertarget{main_8c_source}{}\label{main_8c_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00001}00001\ \textcolor{preprocessor}{\#include\ "{}channel.h"{}}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00002}00002\ \textcolor{preprocessor}{\#include\ "{}coco.h"{}}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00003}00003\ \textcolor{preprocessor}{\#include\ "{}vmac.h"{}}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00004}00004\ \textcolor{preprocessor}{\#include\ "{}waitgroup.h"{}}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00005}00005\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00006}00006\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00007}00007\ INCLUDE\_CHANNEL(\textcolor{keywordtype}{int},\ 10);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00008}00008\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00009}\mbox{\hyperlink{structprint__ctx}{00009}}\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structprint__ctx}{print\_ctx}}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00010}00010\ \ \ \ \ \textcolor{keywordtype}{int}\ c;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00011}00011\ \ \ \ \ channel(\textcolor{keywordtype}{int})\ *\ ch;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00012}00012\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structwait_group}{waitGroup}}\ *wg;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00013}00013\ \ \ \ \ uintptr\_t\ delay;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00014}00014\ \}\ \mbox{\hyperlink{structprint__ctx}{nats\_t}};}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00015}00015\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00016}00016\ \textcolor{keywordtype}{void}\ sigstp\_handler(\textcolor{keywordtype}{void})\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00017}00017\ \ \ \ \ printf(\textcolor{stringliteral}{"{}Stopped\(\backslash\)n"{}});}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00018}00018\ \ \ \ \ yieldStatus(kStopped);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00019}00019\ \ \ \ \ yieldable\_return();}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00020}00020\ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00021}00021\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00022}00022\ \textcolor{keywordtype}{void}\ sigcont\_handler(\textcolor{keywordtype}{void})\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00023}00023\ \ \ \ \ printf(\textcolor{stringliteral}{"{}Continued\(\backslash\)n"{}});}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00024}00024\ \ \ \ \ yieldable\_return();}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00025}00025\ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00026}00026\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00027}00027\ \textcolor{keywordtype}{void}\ nats()\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00028}00028\ \ \ \ \ sigaction(SIGSTP,\ sigstp\_handler);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00029}00029\ \ \ \ \ sigaction(SIGCONT,\ sigcont\_handler);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00030}00030\ \ \ \ \ LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).ch\ =\ ((\textcolor{keywordtype}{void}\ **)CORE.args)[0];}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00031}00031\ \ \ \ \ LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).delay\ =\ ((uintptr\_t\ *)CORE.args)[1];}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00032}00032\ \ \ \ \ LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).wg\ =\ ((\textcolor{keywordtype}{void}\ **)CORE.args)[2];}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00033}00033\ \ \ \ \ yield();}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00034}00034\ \ \ \ \ \textcolor{keywordflow}{for}\ (LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).c\ =\ 0;\ LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).c\ <\ 10;\ ++LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).c)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00035}00035\ \ \ \ \ \ \ \ \ send(\textcolor{keywordtype}{int})(LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).ch,\ LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).c);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00036}00036\ \ \ \ \ \ \ \ \ yieldForMs(LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).delay);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00037}00037\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00038}00038\ \ \ \ \ wg\_done(LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).wg);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00039}00039\ \ \ \ \ close(LOCAL(\mbox{\hyperlink{structprint__ctx}{nats\_t}}).ch);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00040}00040\ \ \ \ \ exit(0);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00041}00041\ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00042}00042\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00043}\mbox{\hyperlink{structkernal__context}{00043}}\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structkernal__context}{kernal\_context}}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00044}00044\ \ \ \ \ channel(\textcolor{keywordtype}{int})\ c;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00045}00045\ \ \ \ \ channel(\textcolor{keywordtype}{int})\ c2;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00046}00046\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structwait_group}{waitGroup}}\ wg;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00047}00047\ \ \ \ \ \textcolor{keywordtype}{int}\ done;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00048}00048\ \}\ \mbox{\hyperlink{structkernal__context}{kernal\_t}};}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00049}00049\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00050}00050\ \textcolor{preprocessor}{\#define\ sleep(i)\ yieldable\_call(\_sleep(i))}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00051}00051\ \textcolor{keywordtype}{void}\ \_sleep(\textcolor{keywordtype}{int}\ i)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00052}00052\ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ ==\ 0)}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00053}00053\ \ \ \ \ \ \ \ \ yieldable\_return();}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00054}00054\ \ \ \ \ yieldForS(1);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00055}00055\ \ \ \ \ i\ =\ sleep(-\/-\/i);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00056}00056\ \ \ \ \ yieldable\_return();}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00057}00057\ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00058}00058\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00059}00059\ \textcolor{keywordtype}{void}\ kernal()\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00060}00060\ \ \ \ \ INIT\_CHANNEL(LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).c);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00061}00061\ \ \ \ \ INIT\_CHANNEL(LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).c2);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00062}00062\ \ \ \ \ wg\_new(\&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).wg);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00063}00063\ \ \ \ \ wg\_add(\&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).wg,\ 2);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00064}00064\ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%d\(\backslash\)n"{}},\ \ \ \ \ sleep(2));}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00065}00065\ \ \ \ \ add\_task((coroutine)nats,}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00066}00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ (\textcolor{keywordtype}{void}\ *[])\{\&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).c,\ (\textcolor{keywordtype}{void}\ *)(uintptr\_t)250,}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00067}00067\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).wg\});}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00068}00068\ \ \ \ \ add\_task((coroutine)nats,}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00069}00069\ \ \ \ \ \ \ \ \ \ \ \ \ \ (\textcolor{keywordtype}{void}\ *[])\{\&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).c2,\ (\textcolor{keywordtype}{void}\ *)(uintptr\_t)500,}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00070}00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).wg\});}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00071}00071\ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00072}00072\ \ \ \ \ \ \ \ \ yield();}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00073}00073\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ val;}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00074}00074\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extract(\textcolor{keywordtype}{int})(\&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).c,\ \&val)\ ==\ kOkay)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00075}00075\ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}1:\ \%d\(\backslash\)n"{}},\ val);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00076}00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ 5)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00077}00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kill(2,\ SIGSTP);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00078}00078\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00079}00079\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00080}00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extract(\textcolor{keywordtype}{int})(\&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).c2,\ \&val)\ ==\ kOkay)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00081}00081\ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}2:\ \%d\(\backslash\)n"{}},\ val);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00082}00082\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ ==\ 9)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00083}00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kill(2,\ SIGCONT);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00084}00084\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00085}00085\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00086}00086\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (wg\_check(\&LOCAL(\mbox{\hyperlink{structkernal__context}{kernal\_t}}).wg))\ \{}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00087}00087\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00088}00088\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00089}00089\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00090}00090\ \ \ \ \ exit(0);}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00091}00091\ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00092}00092\ \textcolor{preprocessor}{\#define\ COCO(kernal)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00093}00093\ \textcolor{preprocessor}{\ \ \ \ for\ (int\ kernal\_tid\ =\ add\_task((coroutine)kernal,\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00094}00094\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ getStatus(kernal\_tid)\ !=\ kDone;\ runTasks())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00095}00095\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00096}00096\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00097}00097\ \textcolor{keywordtype}{int}\ main()\ \{\ COCO(kernal)\ \}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00098}00098\ }
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00099}00099\ \textcolor{comment}{//\ WAITGROUPS}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00100}00100\ \textcolor{comment}{//\ SIGNALS\ check}}
+\DoxyCodeLine{\Hypertarget{main_8c_source_l00101}00101\ \textcolor{comment}{//\ EXIT\ STATUS}}
+
+\end{DoxyCode}
