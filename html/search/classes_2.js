@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['print_5fctx_0',['print_ctx',['../structprint__ctx.html',1,'']]]
+  ['kernal_5fcontext_0',['kernal_context',['../structkernal__context.html',1,'']]]
 ];

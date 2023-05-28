@@ -9,9 +9,18 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -25,6 +34,18 @@
    </div>
    <div id="projectbrief">tiny cooperative runtime</div>
   </td>
+    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
  </tr>
  </tbody>
 </table>
@@ -36,17 +57,23 @@
 var searchBox = new SearchBox("searchBox", "search/",'.html');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
+$(document).ready(function(){initNavTree('structcontext.html',''); initResizable(); });
 /* @license-end */
 </script>
-<div id="main-nav"></div>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -68,190 +95,70 @@ $(function() {
 </div>
 </div>
 
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle"><div class="title">context Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>All the context a coroutine needs to resume in the right place with it's data.  
+ <a href="structcontext.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="coco_8h_source.html">coco.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a5460804fa795b22f14b18362c4ef71dc"><td class="memItemLeft" align="right" valign="top">jmp_buf&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#a5460804fa795b22f14b18362c4ef71dc">caller</a></td></tr>
+<tr class="memitem:a5460804fa795b22f14b18362c4ef71dc"><td class="memItemLeft" align="right" valign="top"><a id="a5460804fa795b22f14b18362c4ef71dc" name="a5460804fa795b22f14b18362c4ef71dc"></a>
+jmp_buf&#160;</td><td class="memItemRight" valign="bottom"><b>caller</b></td></tr>
 <tr class="separator:a5460804fa795b22f14b18362c4ef71dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab204f3919fc15960e194443a7b8da48f"><td class="memItemLeft" align="right" valign="top">jmp_buf&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#ab204f3919fc15960e194443a7b8da48f">resumeStack</a> [20]</td></tr>
-<tr class="separator:ab204f3919fc15960e194443a7b8da48f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b477efdbb20c2c709f7236a57366a8d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#a3b477efdbb20c2c709f7236a57366a8d">resumePoint</a></td></tr>
+<tr class="memitem:a9525cf440932f7898a91e89bb6e010b2"><td class="memItemLeft" align="right" valign="top"><a id="a9525cf440932f7898a91e89bb6e010b2" name="a9525cf440932f7898a91e89bb6e010b2"></a>
+jmp_buf&#160;</td><td class="memItemRight" valign="bottom"><b>resumeStack</b> [20]</td></tr>
+<tr class="separator:a9525cf440932f7898a91e89bb6e010b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b477efdbb20c2c709f7236a57366a8d"><td class="memItemLeft" align="right" valign="top"><a id="a3b477efdbb20c2c709f7236a57366a8d" name="a3b477efdbb20c2c709f7236a57366a8d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>resumePoint</b></td></tr>
 <tr class="separator:a3b477efdbb20c2c709f7236a57366a8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0228cd6a9b1ab509fa616697ffab9f0"><td class="memItemLeft" align="right" valign="top">u_int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#ad0228cd6a9b1ab509fa616697ffab9f0">sigBits</a></td></tr>
+<tr class="memitem:ad0228cd6a9b1ab509fa616697ffab9f0"><td class="memItemLeft" align="right" valign="top"><a id="ad0228cd6a9b1ab509fa616697ffab9f0" name="ad0228cd6a9b1ab509fa616697ffab9f0"></a>
+u_int64_t&#160;</td><td class="memItemRight" valign="bottom"><b>sigBits</b></td></tr>
 <tr class="separator:ad0228cd6a9b1ab509fa616697ffab9f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bcd04561a99db77cb52f552432a2538"><td class="memItemLeft" align="right" valign="top">signalHandler&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#a2bcd04561a99db77cb52f552432a2538">handlers</a> [NUM_SIGNALS]</td></tr>
-<tr class="separator:a2bcd04561a99db77cb52f552432a2538"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad523d3d16448effee0a09f12553fab77"><td class="memItemLeft" align="right" valign="top">clock_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#ad523d3d16448effee0a09f12553fab77">waitStart</a></td></tr>
+<tr class="memitem:ab093b3e6de19193afd9a1e98cbe0be9a"><td class="memItemLeft" align="right" valign="top"><a id="ab093b3e6de19193afd9a1e98cbe0be9a" name="ab093b3e6de19193afd9a1e98cbe0be9a"></a>
+signalHandler&#160;</td><td class="memItemRight" valign="bottom"><b>handlers</b> [NUM_SIGNALS]</td></tr>
+<tr class="separator:ab093b3e6de19193afd9a1e98cbe0be9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad523d3d16448effee0a09f12553fab77"><td class="memItemLeft" align="right" valign="top"><a id="ad523d3d16448effee0a09f12553fab77" name="ad523d3d16448effee0a09f12553fab77"></a>
+clock_t&#160;</td><td class="memItemRight" valign="bottom"><b>waitStart</b></td></tr>
 <tr class="separator:ad523d3d16448effee0a09f12553fab77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3dfa47eda25228e5115c8e7f5f277849"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#a3dfa47eda25228e5115c8e7f5f277849">exitStatus</a></td></tr>
+<tr class="memitem:a3dfa47eda25228e5115c8e7f5f277849"><td class="memItemLeft" align="right" valign="top"><a id="a3dfa47eda25228e5115c8e7f5f277849" name="a3dfa47eda25228e5115c8e7f5f277849"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>exitStatus</b></td></tr>
 <tr class="separator:a3dfa47eda25228e5115c8e7f5f277849"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add0eb34e0cef9e763462cf9080f9be0a"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#add0eb34e0cef9e763462cf9080f9be0a">args</a></td></tr>
-<tr class="separator:add0eb34e0cef9e763462cf9080f9be0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2bde85665dc6bd04599d44d359d2da2"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#ab2bde85665dc6bd04599d44d359d2da2">user</a> [CTX_SIZE]</td></tr>
-<tr class="separator:ab2bde85665dc6bd04599d44d359d2da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af09a6a66a0fea5b98de8301eb21295c3"><td class="memItemLeft" align="right" valign="top"><a id="af09a6a66a0fea5b98de8301eb21295c3" name="af09a6a66a0fea5b98de8301eb21295c3"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>args</b></td></tr>
+<tr class="separator:af09a6a66a0fea5b98de8301eb21295c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2fdf1b120ef5dc33daa6772d7a00da6"><td class="memItemLeft" align="right" valign="top"><a id="aa2fdf1b120ef5dc33daa6772d7a00da6" name="aa2fdf1b120ef5dc33daa6772d7a00da6"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>user</b> [USR_CTX_SIZE]</td></tr>
+<tr class="separator:aa2fdf1b120ef5dc33daa6772d7a00da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff2216ef56b01886a2fd00854cbbde17"><td class="memItemLeft" align="right" valign="top"><a id="aff2216ef56b01886a2fd00854cbbde17" name="aff2216ef56b01886a2fd00854cbbde17"></a>
+coroutine&#160;</td><td class="memItemRight" valign="bottom"><b>func</b></td></tr>
+<tr class="separator:aff2216ef56b01886a2fd00854cbbde17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0880dbf3e78040d12144e628732d6c74"><td class="memItemLeft" align="right" valign="top"><a id="a0880dbf3e78040d12144e628732d6c74" name="a0880dbf3e78040d12144e628732d6c74"></a>
+jmp_buf&#160;</td><td class="memItemRight" valign="bottom"><b>resumePoint</b></td></tr>
+<tr class="separator:a0880dbf3e78040d12144e628732d6c74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa67a2e3705c8f256607d31ac0e646d5f"><td class="memItemLeft" align="right" valign="top"><a id="aa67a2e3705c8f256607d31ac0e646d5f" name="aa67a2e3705c8f256607d31ac0e646d5f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>signal</b></td></tr>
+<tr class="separator:aa67a2e3705c8f256607d31ac0e646d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af269c773df9836829ab4d3f28f0f54a5"><td class="memItemLeft" align="right" valign="top"><a id="af269c773df9836829ab4d3f28f0f54a5" name="af269c773df9836829ab4d3f28f0f54a5"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>user</b> [CTX_SIZE]</td></tr>
+<tr class="separator:af269c773df9836829ab4d3f28f0f54a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00029">29</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-</div><h2 class="groupheader">Field Documentation</h2>
-<a id="add0eb34e0cef9e763462cf9080f9be0a" name="add0eb34e0cef9e763462cf9080f9be0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add0eb34e0cef9e763462cf9080f9be0a">&#9670;&#160;</a></span>args</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void* args</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00042">42</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="a5460804fa795b22f14b18362c4ef71dc" name="a5460804fa795b22f14b18362c4ef71dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5460804fa795b22f14b18362c4ef71dc">&#9670;&#160;</a></span>caller</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">jmp_buf caller</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00031">31</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="a3dfa47eda25228e5115c8e7f5f277849" name="a3dfa47eda25228e5115c8e7f5f277849"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3dfa47eda25228e5115c8e7f5f277849">&#9670;&#160;</a></span>exitStatus</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int exitStatus</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00040">40</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="a2bcd04561a99db77cb52f552432a2538" name="a2bcd04561a99db77cb52f552432a2538"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2bcd04561a99db77cb52f552432a2538">&#9670;&#160;</a></span>handlers</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">signalHandler handlers[NUM_SIGNALS]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00036">36</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="a3b477efdbb20c2c709f7236a57366a8d" name="a3b477efdbb20c2c709f7236a57366a8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b477efdbb20c2c709f7236a57366a8d">&#9670;&#160;</a></span>resumePoint</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int resumePoint</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00033">33</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="ab204f3919fc15960e194443a7b8da48f" name="ab204f3919fc15960e194443a7b8da48f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab204f3919fc15960e194443a7b8da48f">&#9670;&#160;</a></span>resumeStack</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">jmp_buf resumeStack[20]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00032">32</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="ad0228cd6a9b1ab509fa616697ffab9f0" name="ad0228cd6a9b1ab509fa616697ffab9f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0228cd6a9b1ab509fa616697ffab9f0">&#9670;&#160;</a></span>sigBits</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">u_int64_t sigBits</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00035">35</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="ab2bde85665dc6bd04599d44d359d2da2" name="ab2bde85665dc6bd04599d44d359d2da2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2bde85665dc6bd04599d44d359d2da2">&#9670;&#160;</a></span>user</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char user[CTX_SIZE]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00043">43</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<a id="ad523d3d16448effee0a09f12553fab77" name="ad523d3d16448effee0a09f12553fab77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad523d3d16448effee0a09f12553fab77">&#9670;&#160;</a></span>waitStart</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">clock_t waitStart</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="coco_8h_source.html#l00038">38</a> of file <a class="el" href="coco_8h_source.html">coco.h</a>.</p>
-
-</div>
-</div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li><a class="el" href="coco_8h_source.html">coco.h</a></li>
-</ul>
-</div><!-- contents -->
+<div class="textblock"><p>All the context a coroutine needs to resume in the right place with it's data. </p>
+</div></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structcontext.html">context</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7 </li>
+  </ul>
+</div>
 </body>
 </html>

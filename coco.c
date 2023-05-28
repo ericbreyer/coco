@@ -1,13 +1,20 @@
 #include "coco.h"
 
-// Structure of a task.
+/**
+ * @brief Structure of a task from the OS's POV.
+ */
 struct task {
     enum task_status status;
     struct context ctx;
     coroutine func;
 };
 
-// All tasks and contexts must be kept in program memory.
+/**
+ * @brief All tasks and their contexts must be kept in program memory, since the
+ * stack can get corrupted when longjmping back and forth, and embedded
+ * applications don't like malloc.
+ *
+ */
 static struct task tasks[MAX_TASKS + 1];
 
 int add_task(coroutine func, void *args) {
@@ -26,15 +33,27 @@ int add_task(coroutine func, void *args) {
     return 0;
 }
 
+/**
+ * @brief Run a single task that has already been started/
+ * 
+ * @param[in] i the tid of the task to run
+ * @return enum task_status the status of said task after it yields
+ */
 enum task_status runTask(int i) {
     int ret;
     if ((ret = setjmp(tasks[i].ctx.caller)) == 0) {
         ctx = getContext(i);
-        yieldable_return(0);
+        longjmp(ctx->resumeStack[--ctx->resumePoint], 0 + 1);
     }
     return ret;
 }
 
+/**
+ * @brief Start a single task that has not already been started
+ * 
+ * @param[in] i the tid of the task to start
+ * @return enum task_status the status of said task after it yields
+ */
 enum task_status startTask(int i) {
     int ret;
     if ((ret = setjmp(tasks[i].ctx.caller)) == 0) {
@@ -68,18 +87,13 @@ struct context *getContext(int tid) {
     return (struct context *)&tasks[tid].ctx;
 }
 
-void _waitpid(int tid, int opts, int *exitStatus) {
-    for (;;) {
-        if (getStatus(tid) == kDone) {
-            tasks[tid].status = kDead;
-            if(exitStatus) {
-                *exitStatus = getContext(tid)->exitStatus;
-            }
-            yieldable_return(tid);
+int reappid(int tid, int *exitStatus) {
+    if (getStatus(tid) == kDone) {
+        tasks[tid].status = kDead;
+        if (exitStatus) {
+            *exitStatus = getContext(tid)->exitStatus;
         }
-        if (opts & WNOHANG) {
-            yieldable_return(0);
-        }
-        yield();
+        return tid;
     }
+    return 0;
 }

@@ -9,7 +9,7 @@ void _doSignal(void) {
     for (int sig = 0; sig < NUM_SIGNALS; ++sig) {
         if (ctx->sigBits & SIG_MASK(sig)) {
                 ctx->sigBits &= ~SIG_MASK(sig);
-            ctx->handlers[sig]();
+            yieldable_call(ctx->handlers[sig]());
         }
     }
     yieldable_return(0);

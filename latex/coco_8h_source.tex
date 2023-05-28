@@ -1,133 +1,133 @@
 \doxysection{coco.\+h}
-\hypertarget{coco_8h_source}{}\label{coco_8h_source}
+\hypertarget{coco_8h_source}{}\label{coco_8h_source}\mbox{\hyperlink{coco_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00001}00001\ \textcolor{preprocessor}{\#pragma\ once}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00002}00002\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00003}00003\ \textcolor{preprocessor}{\#include\ <setjmp.h>}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00004}00004\ \textcolor{preprocessor}{\#include\ <time.h>}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00005}00005\ \textcolor{comment}{//\ \#include\ <sys/time.h>}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00006}00006\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00007}00007\ \textcolor{preprocessor}{\#include\ "{}channel.h"{}}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00008}00008\ \textcolor{preprocessor}{\#include\ "{}signals.h"{}}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00009}00009\ \textcolor{preprocessor}{\#include\ "{}vmac.h"{}}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00010}00010\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00011}00011\ \textcolor{comment}{//\ Max\ tasks\ and\ size\ in\ bytes\ of\ user\ thread\ data\ segment.}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00012}00012\ \textcolor{preprocessor}{\#define\ MAX\_TASKS\ 10}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00013}00013\ \textcolor{preprocessor}{\#define\ CTX\_SIZE\ 256}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00014}00014\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00015}00015\ \textcolor{comment}{//\ Possible\ states\ a\ (non-\/running)\ task\ can\ be\ in.}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00016}00016\ \textcolor{keyword}{enum}\ task\_status\ \{}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00017}00017\ \ \ \ \ kDead,}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00018}00018\ \ \ \ \ kDone,}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00019}00019\ \ \ \ \ kYielding,}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00020}00020\ \ \ \ \ kStopped,}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00021}00021\ \ \ \ \ kNew,}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00022}00022\ \};}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00023}00023\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00024}00024\ \textcolor{comment}{//\ A\ coroutine\ (thread/process)\ should\ only\ enter\ and\ exit\ through\ longjmps.}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00025}00025\ \textcolor{keyword}{typedef}\ void\ (*coroutine)(void);}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00026}00026\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00027}00027\ \textcolor{comment}{//\ All\ the\ context\ a\ coroutine\ needs\ to\ resume\ in\ the\ right\ place\ with\ it's}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00028}00028\ \textcolor{comment}{//\ data.}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00029}\mbox{\hyperlink{structcontext}{00029}}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ \{}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00030}00030\ \ \ \ \ \textcolor{comment}{//\ Calling\ contexts}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00031}00031\ \ \ \ \ jmp\_buf\ caller;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00032}00032\ \ \ \ \ jmp\_buf\ resumeStack[20];}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00033}00033\ \ \ \ \ \textcolor{keywordtype}{int}\ resumePoint;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00034}00034\ \ \ \ \ \textcolor{comment}{//\ Signals}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00035}00035\ \ \ \ \ u\_int64\_t\ sigBits;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00036}00036\ \ \ \ \ signalHandler\ handlers[NUM\_SIGNALS];}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00037}00037\ \ \ \ \ \textcolor{comment}{//\ Yielding\ Data}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00038}00038\ \ \ \ \ clock\_t\ waitStart;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00039}00039\ \ \ \ \ \textcolor{comment}{//\ Exit\ Status}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00040}00040\ \ \ \ \ \textcolor{keywordtype}{int}\ exitStatus;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00041}00041\ \ \ \ \ \textcolor{comment}{//\ User\ data}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00042}00042\ \ \ \ \ \textcolor{keywordtype}{void}\ *args;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00043}00043\ \ \ \ \ \textcolor{keywordtype}{char}\ user[CTX\_SIZE];}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00044}00044\ \};}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00045}00045\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00046}00046\ \textcolor{comment}{//\ Global\ for\ the\ current\ context.\ (Dont\ have\ access\ to\ multiple\ CPUs,\ so\ only}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00047}00047\ \textcolor{comment}{//\ one\ task\ runs\ at\ a\ time).}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00048}00048\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ *ctx;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00049}00049\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00057}00057\ \textcolor{keywordtype}{int}\ add\_task(coroutine\ func,\ \textcolor{keywordtype}{void}\ *args);}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00058}00058\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00063}00063\ \textcolor{keywordtype}{void}\ runTasks();}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00064}00064\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00071}00071\ \textcolor{keyword}{enum}\ task\_status\ getStatus(\textcolor{keywordtype}{int}\ tid);}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00072}00072\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00079}00079\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ *getContext(\textcolor{keywordtype}{int}\ tid);}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00080}00080\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00087}00087\ \textcolor{keywordtype}{void}\ kill(\textcolor{keywordtype}{int}\ tid,\ \textcolor{keywordtype}{int}\ signal);}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00088}00088\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00089}00089\ \textcolor{preprocessor}{\#define\ WNOOPT\ (0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00090}00090\ \textcolor{preprocessor}{\#define\ WNOHANG\ (1\ <<\ 0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00100}00100\ \textcolor{preprocessor}{\#define\ waitpid(tid,\ opts,\ status)\ yieldable\_call(\_waitpid(tid,\ opts,\ status))}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00101}00101\ \textcolor{keywordtype}{void}\ \_waitpid(\textcolor{keywordtype}{int}\ tid,\ \textcolor{keywordtype}{int}\ opts,\ \textcolor{keywordtype}{int}\ *exitStatus);}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00102}00102\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00107}00107\ \textcolor{preprocessor}{\#define\ yield()\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00108}00108\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00109}00109\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++])\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00110}00110\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kYielding);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00111}00111\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00112}00112\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ doSignal();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00113}00113\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00114}00114\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00115}00115\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00121}00121\ \textcolor{preprocessor}{\#define\ yieldStatus(stat)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00122}00122\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00123}00123\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++])\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00124}00124\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ stat);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00125}00125\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00126}00126\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ doSignal();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00127}00127\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00128}00128\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00134}00134\ \textcolor{preprocessor}{\#define\ yieldForMs(ms)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00135}00135\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00136}00136\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ctx-\/>waitStart\ =\ clock();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00137}00137\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++])\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00138}00138\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kYielding);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00139}00139\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00140}00140\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ doSignal();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00141}00141\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ ((clock()\ -\/\ ctx-\/>waitStart)\ *\ 1000\ /\ CLOCKS\_PER\_SEC\ <\ ms)\ \{\ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00142}00142\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ ctx-\/>resumePoint++;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00143}00143\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kYielding);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00144}00144\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00145}00145\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00146}00146\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00152}00152\ \textcolor{preprocessor}{\#define\ yieldForS(s)\ yieldForMs(s\ *\ 1000)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00153}00153\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00160}00160\ \textcolor{preprocessor}{\#define\ exit(...)\ VMAC(\_exit,\ \_\_VA\_ARGS\_\_)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00161}00161\ \textcolor{preprocessor}{\#define\ \_exit0()\ \_exit(0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00162}00162\ \textcolor{preprocessor}{\#define\ \_exit1(i)\ \_exit(i)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00163}00163\ \textcolor{preprocessor}{\#define\ \_exit(i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00164}00164\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00165}00165\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint]);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00166}00166\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ctx-\/>resumePoint++;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00167}00167\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ctx-\/>exitStatus\ =\ i;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00168}00168\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kDone);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00169}00169\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00170}00170\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00171}00171\ \textcolor{comment}{//\ For\ called\ functions\ to\ be\ able\ to\ yield,\ they\ need\ to\ be\ called\ with\ setjmp}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00172}00172\ \textcolor{comment}{//\ and\ return\ via\ longjmp\ (because\ return\ values\ on\ the\ stack\ get\ messed\ up\ when}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00173}00173\ \textcolor{comment}{//\ yielding).\ Using\ the\ fact\ that\ setjmp/longjmp\ can\ pass\ integers,\ and\ some}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00174}00174\ \textcolor{comment}{//\ macro\ trickery,\ we\ can\ make\ it\ seem\ like\ yieldable\ functions\ can\ return\ ints.}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00175}00175\ \textcolor{comment}{//\ any\ other\ return\ values\ should\ happen\ through}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00176}00176\ \textcolor{preprocessor}{\#define\ yieldable\_return(...)\ VMAC(\_yieldable\_return,\ \_\_VA\_ARGS\_\_)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00177}00177\ \textcolor{preprocessor}{\#define\ \_yieldable\_return0()\ \_yieldable\_return(0)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00178}00178\ \textcolor{preprocessor}{\#define\ \_yieldable\_return1(x)\ \_yieldable\_return(x)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00179}00179\ \textcolor{preprocessor}{\#define\ \_yieldable\_return(x)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00180}00180\ \textcolor{preprocessor}{\ \ \ \ longjmp(ctx-\/>resumeStack[-\/-\/ctx-\/>resumePoint],\ x\ +\ 1)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00181}00181\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00182}00182\ \textcolor{keywordtype}{int}\ temp;}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00183}00183\ \textcolor{preprocessor}{\#define\ yieldable\_call(call)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00184}00184\ \textcolor{preprocessor}{\ \ \ \ ((temp\ =\ setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++]))\ ==\ 0)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00185}00185\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ?\ (call,\ ctx-\/>resumePoint-\/-\/,\ 0)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00186}00186\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ temp\ -\/\ 1}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00187}00187\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00188}00188\ }
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00189}00189\ \textcolor{comment}{//\ Shortcuts\ to\ access\ parts\ of\ the\ context.}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00190}00190\ \textcolor{preprocessor}{\#define\ LOCAL(type)\ (*(type\ *)(\&ctx-\/>user))}}
-\DoxyCodeLine{\Hypertarget{coco_8h_source_l00191}00191\ \textcolor{preprocessor}{\#define\ CORE\ (*ctx)}}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <setjmp.h>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <time.h>}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ \#include\ <sys/time.h>}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}channel.h"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}signals.h"{}}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}vmac.h"{}}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#define\ MAX\_TASKS\ 10}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#define\ USR\_CTX\_SIZE\ 256\ }\textcolor{comment}{//\ Max\ size\ of\ user\ data\ context\ segment}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{coco_8h_a095fa726e901542e80da596043d07e4b}{task\_status}}\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ kDead,}
+\DoxyCodeLine{00030\ \ \ \ \ kDone,}
+\DoxyCodeLine{00031\ \ \ \ \ kYielding,}
+\DoxyCodeLine{00032\ \ \ \ \ kStopped,}
+\DoxyCodeLine{00033\ \ \ \ \ kNew,}
+\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{typedef}\ void\ (*\mbox{\hyperlink{coco_8h_a65958ed35d71490ab6a9d5f88bfb358e}{coroutine}})(void);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{comment}{//\ Calling\ contexts}}
+\DoxyCodeLine{00048\ \ \ \ \ jmp\_buf\ caller;}
+\DoxyCodeLine{00049\ \ \ \ \ jmp\_buf\ resumeStack[20];}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{int}\ resumePoint;}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{comment}{//\ Signals}}
+\DoxyCodeLine{00052\ \ \ \ \ u\_int64\_t\ sigBits;}
+\DoxyCodeLine{00053\ \ \ \ \ signalHandler\ handlers[NUM\_SIGNALS];}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{comment}{//\ Yielding\ Data}}
+\DoxyCodeLine{00055\ \ \ \ \ clock\_t\ waitStart;}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{comment}{//\ Exit\ Status}}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{int}\ exitStatus;}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{comment}{//\ User\ data}}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{void}\ *args;}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{char}\ user[USR\_CTX\_SIZE];}
+\DoxyCodeLine{00061\ \};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00067\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ *\mbox{\hyperlink{coco_8h_a358710cfcf73fed67a687def258a60e7}{ctx}};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00076\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{coco_8h_abb63d1a3c051cdc5d8d165cd2ce029c6}{add\_task}}(\mbox{\hyperlink{coco_8h_a65958ed35d71490ab6a9d5f88bfb358e}{coroutine}}\ func,\ \textcolor{keywordtype}{void}\ *args);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00082\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{coco_8h_a5f64d16e473cf589ad0210e1a2ffabf1}{runTasks}}();}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00090\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{coco_8h_a095fa726e901542e80da596043d07e4b}{task\_status}}\ \mbox{\hyperlink{coco_8h_aa717bab66fb1252a205ac24e4cede022}{getStatus}}(\textcolor{keywordtype}{int}\ tid);}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00098\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcontext}{context}}\ *\mbox{\hyperlink{coco_8h_a108c12f881ab9dbf34ad60560b44f856}{getContext}}(\textcolor{keywordtype}{int}\ tid);}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00106\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{coco_8h_a8c432e4f8ec0a1278f495592d3e7f96f}{kill}}(\textcolor{keywordtype}{int}\ tid,\ \textcolor{keywordtype}{int}\ signal);}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\#define\ WNOOPT\ (0)}}
+\DoxyCodeLine{00119\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{coco_8h_a5f176fe33629246c9c53084fb2f7d2da}{reappid}}(\textcolor{keywordtype}{int}\ tid,\ \textcolor{keywordtype}{int}\ *exitStatus);}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#define\ yield()\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++])\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kYielding);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ doSignal();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\#define\ yieldStatus(stat)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++])\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ stat);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00142\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ doSignal();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#define\ yieldForMs(ms)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ctx-\/>waitStart\ =\ clock();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00154\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++])\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kYielding);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ doSignal();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00158\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ ((clock()\ -\/\ ctx-\/>waitStart)\ *\ 1000\ /\ CLOCKS\_PER\_SEC\ <\ ms)\ \{\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ ctx-\/>resumePoint++;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00160\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kYielding);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\#define\ yieldForS(s)\ yieldForMs(s\ *\ 1000)}}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\#define\ exit(...)\ VMAC(\_exit,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00178\ \textcolor{preprocessor}{\#define\ \_exit0()\ \_exit(0)}}
+\DoxyCodeLine{00179\ \textcolor{preprocessor}{\#define\ \_exit1(i)\ \_exit(i)}}
+\DoxyCodeLine{00180\ \textcolor{preprocessor}{\#define\ \_exit(i)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00181\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00182\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint]);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00183\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ctx-\/>resumePoint++;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00184\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ctx-\/>exitStatus\ =\ i;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00185\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ longjmp(ctx-\/>caller,\ kDone);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00186\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00189\ \textcolor{comment}{\ *\ For\ called\ functions\ to\ be\ able\ to\ yield,\ they\ need\ to\ be\ called\ with\ setjmp}}
+\DoxyCodeLine{00190\ \textcolor{comment}{\ *\ and\ return\ via\ longjmp\ (because\ return\ values\ on\ the\ stack\ get\ messed\ up\ when}}
+\DoxyCodeLine{00191\ \textcolor{comment}{\ *\ yielding).\ Using\ the\ fact\ that\ setjmp/longjmp\ can\ pass\ integers,\ and\ some}}
+\DoxyCodeLine{00192\ \textcolor{comment}{\ *\ macro\ trickery,\ we\ can\ make\ it\ seem\ like\ yieldable\ functions\ can\ return\ ints.}}
+\DoxyCodeLine{00193\ \textcolor{comment}{\ *\ any\ other\ return\ values\ should\ happen\ through\ output\ parameters}}
+\DoxyCodeLine{00194\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00203\ \textcolor{preprocessor}{\#define\ yieldable\_return(...)\ VMAC(\_yieldable\_return,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00204\ \textcolor{preprocessor}{\#define\ \_yieldable\_return0()\ \_yieldable\_return(0)}}
+\DoxyCodeLine{00205\ \textcolor{preprocessor}{\#define\ \_yieldable\_return1(x)\ \_yieldable\_return(x)}}
+\DoxyCodeLine{00206\ \textcolor{preprocessor}{\#define\ \_yieldable\_return(x)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00207\ \textcolor{preprocessor}{\ \ \ \ longjmp(ctx-\/>resumeStack[-\/-\/ctx-\/>resumePoint],\ x\ +\ 1)}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{keywordtype}{int}\ temp;}
+\DoxyCodeLine{00218\ \textcolor{preprocessor}{\#define\ yieldable\_call(call)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00219\ \textcolor{preprocessor}{\ \ \ \ ((temp\ =\ setjmp(ctx-\/>resumeStack[ctx-\/>resumePoint++]))\ ==\ 0)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ?\ (call,\ ctx-\/>resumePoint-\/-\/,\ 0)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ temp\ -\/\ 1}}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\#define\ DECLARE\_LOCAL\_CONTEXT(func,\ members)\ struct\ func\#\#\_ctx\ members;}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00235\ \textcolor{preprocessor}{\#define\ LOCAL(func)\ (*(struct\ func\#\#\_ctx\ *)(\&ctx-\/>user))}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\#define\ CORE\ (*ctx)}}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00248\ \textcolor{preprocessor}{\#define\ COCO(kernal)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00249\ \textcolor{preprocessor}{\ \ \ \ for\ (int\ kernalid\ =\ add\_task((coroutine)kernal,\ NULL);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00250\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ getStatus(kernalid)\ !=\ kDone;\ runTasks())\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00251\ \textcolor{preprocessor}{\ \ \ \ \}}}
 
 \end{DoxyCode}

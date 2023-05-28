@@ -1,7 +1,25 @@
+/**
+ * @file channel.h
+ * @author Eric Breyer (ericbreyer.com)
+ * @brief Definitions to create FIFO queues for inter-task communication.
+ * Inspired heavily by go channels.
+ * @version 0.2
+ * @date 2023-05-27
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+
 #include <string.h>
 
 #pragma once
-enum C_STATUS { kOkay, kFull, kEmpty, kClosed };
+
+/**
+ * @brief The status of the channel.
+ * 
+ */
+enum channel_status { kOkay, kFull, kEmpty, kClosed };
+
 
 #define channel(T) channel_##T
 #define extract(T) extract_##T
@@ -29,7 +47,7 @@ enum C_STATUS { kOkay, kFull, kEmpty, kClosed };
         int closed;                                                            \
     } channel(T);                                                              \
                                                                                \
-    enum C_STATUS extract(T)(channel(T) * c, T * out) {                        \
+    enum channel_status extract(T)(channel(T) * c, T * out) {                        \
         if (c->count == 0) {                                                   \
             return kEmpty;                                                     \
         }                                                                      \
@@ -40,8 +58,8 @@ enum C_STATUS { kOkay, kFull, kEmpty, kClosed };
         return kOkay;                                                          \
     }                                                                          \
                                                                                \
-    enum C_STATUS send(T)(channel(T) * c, T data) {                            \
-        if (closed(c))                                                 \
+    enum channel_status send(T)(channel(T) * c, T data) {                            \
+        if (closed(c))                                                         \
             return kClosed;                                                    \
         if (c->count == c->bufSize) {                                          \
             return kFull;                                                      \

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['waitgroup_0',['waitGroup',['../structwait_group.html',1,'']]]
+  ['print_5fctx_0',['print_ctx',['../structprint__ctx.html',1,'']]]
 ];

@@ -1,35 +1,31 @@
 \doxysection{waitgroup.\+h}
 \hypertarget{waitgroup_8h_source}{}\label{waitgroup_8h_source}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00001}00001\ \textcolor{preprocessor}{\#pragma\ once}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00002}00002\ \textcolor{preprocessor}{\#include\ "{}coco.h"{}}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00003}00003\ }
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00004}\mbox{\hyperlink{structwait_group}{00004}}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structwait_group}{waitGroup}}\ \{}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00005}00005\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ counter;}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00006}00006\ \};}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00007}00007\ }
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00008}00008\ \textcolor{keywordtype}{void}\ wg\_new(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *\ wg)\ \{}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00009}00009\ \ \ \ \ wg-\/>counter\ =\ 0;}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00010}00010\ \}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00011}00011\ }
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00012}00012\ \textcolor{keywordtype}{void}\ wg\_add(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *\ wg,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ numTasks)\ \{}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00013}00013\ \ \ \ \ wg-\/>counter\ +=\ numTasks;}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00014}00014\ \}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00015}00015\ }
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00016}00016\ \textcolor{keywordtype}{void}\ wg\_done(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *\ wg)\ \{}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00017}00017\ \ \ \ \ -\/-\/wg-\/>counter;}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00018}00018\ \}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00019}00019\ }
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00020}00020\ \textcolor{keywordtype}{int}\ wg\_check(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *\ wg)\ \{}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00021}00021\ \ \ \ \ \textcolor{keywordflow}{return}\ wg-\/>counter\ ==\ 0;}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00022}00022\ \}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00023}00023\ }
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00024}00024\ \textcolor{preprocessor}{\#define\ wg\_wait(wg)\ coco\_call(\_wg\_wait(wg))}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00025}00025\ \textcolor{keywordtype}{void}\ \_wg\_wait(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *\ wg)\ \{}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00026}00026\ \ \ \ \ \textcolor{keywordflow}{if}(wg-\/>counter\ ==\ 0)\ \{}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00027}00027\ \ \ \ \ \ \ \ \ yieldable\_return(0);}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00028}00028\ \ \ \ \ \}}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00029}00029\ \ \ \ \ yield();}
-\DoxyCodeLine{\Hypertarget{waitgroup_8h_source_l00030}00030\ \}}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{coco_8h}{coco.h}}"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structwait_group}{waitGroup}}\ \{}
+\DoxyCodeLine{00005\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ counter;}
+\DoxyCodeLine{00006\ \};}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keywordtype}{void}\ wg\_new(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *wg)\ \{\ wg-\/>counter\ =\ 0;\ \}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keywordtype}{void}\ wg\_add(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *wg,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ numTasks)\ \{}
+\DoxyCodeLine{00011\ \ \ \ \ wg-\/>counter\ +=\ numTasks;}
+\DoxyCodeLine{00012\ \}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keywordtype}{void}\ wg\_done(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *wg)\ \{\ -\/-\/wg-\/>counter;\ \}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keywordtype}{int}\ wg\_check(\textcolor{keyword}{struct}\ \mbox{\hyperlink{structwait_group}{waitGroup}}\ *wg)\ \{\ \textcolor{keywordflow}{return}\ wg-\/>counter\ ==\ 0;\ \}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ wg\_wait(wg)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ for\ (;;)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ if\ (wg-\/>counter\ ==\ 0)\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ yieldable\_return(0);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ yield();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
 
 \end{DoxyCode}
