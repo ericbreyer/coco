@@ -4,7 +4,7 @@
 #include "waitgroup.h"
 #include <stdio.h>
 
-INCLUDE_CHANNEL(int, 10);
+INCLUDE_CHANNEL(int, 10); // Declare use of an integer channel with buffer size 10
 
 void sigstp_handler(void) {
     printf("Stopped\n");

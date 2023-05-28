@@ -97,14 +97,6 @@ enum task_status getStatus(int tid);
  */
 struct context *getContext(int tid);
 
-/**
- * @brief sends a signal to a task
- *
- * @param[in] tid the id of the task
- * @param[in] signal the signal to send, must be a valid, defined signal
- */
-void kill(int tid, int signal);
-
 #define WNOOPT (0)
 /**
  * @brief checks if a task has exited, reaping it and getting its exit status if

@@ -10,16 +10,13 @@
  *
  */
 
-#include <string.h>
-
 #pragma once
 
 /**
  * @brief The status of the channel.
- * 
+ *
  */
 enum channel_status { kOkay, kFull, kEmpty, kClosed };
-
 
 #define channel(T) channel_##T
 #define extract(T) extract_##T
@@ -47,24 +44,22 @@ enum channel_status { kOkay, kFull, kEmpty, kClosed };
         int closed;                                                            \
     } channel(T);                                                              \
                                                                                \
-    enum channel_status extract(T)(channel(T) * c, T * out) {                        \
+    enum channel_status extract(T)(channel(T) * c, T * out) {                  \
         if (c->count == 0) {                                                   \
             return kEmpty;                                                     \
         }                                                                      \
-        memcpy(                                                                \
-            out,                                                               \
-            &c->buf[(c->insertPtr - (c->count--) + c->bufSize) % c->bufSize],  \
-            sizeof(T));                                                        \
+        *out =                                                                 \
+            c->buf[(c->insertPtr - (c->count--) + c->bufSize) % c->bufSize];   \
         return kOkay;                                                          \
     }                                                                          \
                                                                                \
-    enum channel_status send(T)(channel(T) * c, T data) {                            \
+    enum channel_status send(T)(channel(T) * c, T data) {                      \
         if (closed(c))                                                         \
             return kClosed;                                                    \
         if (c->count == c->bufSize) {                                          \
             return kFull;                                                      \
         }                                                                      \
-        memcpy(&c->buf[(c->insertPtr++) % c->bufSize], &data, sizeof(T));      \
+        c->buf[(c->insertPtr++) % c->bufSize] = data;                         \
         ++c->count;                                                            \
         return kOkay;                                                          \
     }
