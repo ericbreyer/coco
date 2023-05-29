@@ -4,6 +4,7 @@ coco is a tiny, portable cooperative scheduler for C. It can be used to as a sim
 
 ### coco features:
 <h4>coco core (coco.h)</h4>
+
 - Task concurency
 - Dynamic task creation
 - Task contexts for data restoration upon reentry
