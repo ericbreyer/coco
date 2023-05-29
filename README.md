@@ -1,6 +1,6 @@
 @mainpage
 # coco
-coco is a tiny, portable cooperative scheduler for C. It can simply be used to make coroutines, but it has capabilities of a small operating system.
+coco is a tiny, portable cooperative scheduler for C. It can be used to as a simple coroutine library, or with the capabilities of a small operating system.
 
 ### coco features:
 <h4>coco core (coco.h)</h4>
