@@ -9,6 +9,9 @@
  * @copyright Copyright (c) 2023
  *
  */
+
+/// @defgroup core
+/// @{
 #pragma once
 
 #include <setjmp.h>
@@ -26,11 +29,11 @@
  * @brief Possible states a (non-running) task can be in.
  */
 enum task_status {
-    kDead,
-    kDone,
-    kYielding,
-    kStopped,
-    kNew,
+    kDead,     ///< Not running, memory can be repurposed
+    kDone,     ///< Not running, not yet reaped
+    kYielding, ///< Running normally
+    kStopped,  ///< Running, execution paused
+    kNew,      ///< Created but not yet running
 };
 
 /**
@@ -241,3 +244,5 @@ int temp;
     for (int kernalid = add_task((coroutine)kernal, NULL);                     \
          getStatus(kernalid) != kDone; runTasks()) {                           \
     }
+
+/// @}
