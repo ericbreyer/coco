@@ -1,8 +1,8 @@
 TARGET = main.exe
-LIBS = -lm -lc
+LIBS = -lm -lc -lfaststdio
 
-CC = gcc
-CFLAGS = -g -O3 -Wall -Wextra
+CC = gcc-13
+CFLAGS = -g -Og -Wall -Wextra -Wno-infinite-recursion
 
 .PHONY: default all clean
 .PRECIOUS: $(TARGET) $(OBJECTS)

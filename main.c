@@ -3,18 +3,17 @@
 #include "vmac.h"
 #include "waitgroup.h"
 #include <stdio.h>
+#include <string.h>
 
-INCLUDE_CHANNEL(int, 10); // Declare use of an integer channel with buffer size 10
+INCLUDE_CHANNEL(int,
+                10); // Declare use of an integer channel with buffer size 10
 
 void sigstp_handler(void) {
     printf("Stopped\n");
-    yieldStatus(kStopped);
-    yieldable_return();
 }
 
 void sigcont_handler(void) {
     printf("Continued\n");
-    yieldable_return();
 }
 
 DECLARE_LOCAL_CONTEXT(nats, {
@@ -45,6 +44,8 @@ DECLARE_LOCAL_CONTEXT(kernal, {
     channel(int) c2;
     struct waitGroup wg;
     int done;
+    void *args1[3];
+    void *args2[3];
 })
 
 #define sleep(i) yieldable_call(_sleep(i))
@@ -53,7 +54,7 @@ void _sleep(int i) {
         yieldable_return();
     yieldForS(1);
     i = sleep(--i);
-    yieldable_return();
+    yieldable_return(10);
 }
 
 void kernal() {
@@ -61,13 +62,17 @@ void kernal() {
     INIT_CHANNEL(LOCAL(kernal).c2);
     wg_new(&LOCAL(kernal).wg);
     wg_add(&LOCAL(kernal).wg, 2);
-    printf("%d\n", sleep(2));
-    add_task((coroutine)nats,
-             (void *[]){&LOCAL(kernal).c, (void *)(uintptr_t)250,
-                        &LOCAL(kernal).wg});
-    add_task((coroutine)nats,
-             (void *[]){&LOCAL(kernal).c2, (void *)(uintptr_t)500,
-                        &LOCAL(kernal).wg});
+    printf("%d\n",sleep(1));
+    memcpy(
+        LOCAL(kernal).args1,
+        (void *[]){&LOCAL(kernal).c, (void *)(uintptr_t)250, &LOCAL(kernal).wg},
+        3 * sizeof(void *));
+    memcpy(
+        LOCAL(kernal).args2,
+        (void *[]){&LOCAL(kernal).c2, (void *)(uintptr_t)500, &LOCAL(kernal).wg},
+        3 * sizeof(void *));
+    add_task((coroutine)nats, &LOCAL(kernal).args1);
+    add_task((coroutine)nats, &LOCAL(kernal).args2);
     for (;;) {
         yield();
         int val;
@@ -87,7 +92,7 @@ void kernal() {
             break;
         }
     }
-    exit(0);
+    exit(1);
 }
 
 int main() { COCO(kernal) }

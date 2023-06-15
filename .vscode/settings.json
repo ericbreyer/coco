@@ -40,5 +40,6 @@
         "channel.h": "c",
         "string.h": "c",
         "time.h": "c"
-    }
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

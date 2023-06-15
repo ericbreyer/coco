@@ -9,6 +9,10 @@ struct task {
     coroutine func;
 };
 
+struct context *ctx;
+int currentTid;
+int temp;
+
 /**
  * @brief All tasks and their contexts must be kept in program memory, since the
  * stack can get corrupted when longjmping back and forth, and embedded
@@ -63,14 +67,20 @@ enum task_status startTask(int i) {
     return ret;
 }
 
+void stopRunningTask() {
+    tasks[currentTid].status = kStopped;
+}
+
 void runTasks() {
     for (int i = 1; i <= MAX_TASKS; ++i) {
+        currentTid = i;
         switch (tasks[i].status) {
         case kYielding:
             tasks[i].status = runTask(i);
             break;
         case kNew:
             tasks[i].status = startTask(i);
+            break;
         case kStopped:
             if (tasks[i].ctx.sigBits & SIG_MASK(SIGCONT)) {
                 tasks[i].status = runTask(i);

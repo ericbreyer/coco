@@ -59,7 +59,7 @@ enum channel_status { kOkay, kFull, kEmpty, kClosed };
         if (c->count == c->bufSize) {                                          \
             return kFull;                                                      \
         }                                                                      \
-        c->buf[(c->insertPtr++) % c->bufSize] = data;                         \
+        c->buf[(c->insertPtr++) % c->bufSize] = data;                          \
         ++c->count;                                                            \
         return kOkay;                                                          \
     }

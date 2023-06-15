@@ -47,13 +47,11 @@ typedef void (*coroutine)(void);
  * it's data.
  */
 struct context {
-    // Calling contexts
-    jmp_buf caller;
-    jmp_buf resumeStack[20];
-    int resumePoint;
-    // Signals
-    u_int64_t sigBits;
-    signalHandler handlers[NUM_SIGNALS];
+    jmp_buf caller; ///< the jump point to yield control to
+    jmp_buf resumeStack[20]; ///< the resume points of this task
+    int resumePoint; ///< the index of the next resume point to pop
+    u_int64_t sigBits; ///< a bit vector of signals
+    signalHandler handlers[NUM_SIGNALS]; ///< handler callbacks for said signals
     // Yielding Data
     clock_t waitStart;
     // Exit Status
@@ -67,7 +65,7 @@ struct context {
  * @brief Global for the current context. (Dont have access to multiple cores,
  * so only one task runs at a time).
  */
-struct context *ctx;
+extern struct context *ctx;
 
 /**
  * @brief Adds a task to the scheduler
@@ -77,7 +75,7 @@ struct context *ctx;
  * @return the tid of the added task
  */
 int add_task(coroutine func, void *args);
-
+void stopRunningTask();
 /**
  * @brief Run all scheduled tasks
  *
@@ -201,7 +199,7 @@ int reappid(int tid, int *exitStatus);
 #define _yieldable_return(x)                                                   \
     longjmp(ctx->resumeStack[--ctx->resumePoint], x + 1)
 
-int temp;
+extern int temp;
 /**
  * @brief Call a function that has the ability to yield.
  *
