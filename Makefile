@@ -1,10 +1,16 @@
 TARGET = main.exe
-LIBS = -lm -lc -lfaststdio
+LIBS = -lm -lc
 
 CC = gcc-13
-CFLAGS = -g -Og -Wall -Wextra -Wno-infinite-recursion
+COCOFLAGS = -D_FORTIFY_SOURCE=0 -fno-move-loop-invariants
+CFLAGS = -g -Wall -Wextra -O3 $(COCOFLAGS)
 
-.PHONY: default all clean
+
+
+# -Wno-infinite-recursion  -fno-stack-protector
+
+
+.PHONY: default all clean force
 .PRECIOUS: $(TARGET) $(OBJECTS)
 
 default: $(TARGET)
@@ -13,12 +19,17 @@ all: default
 OBJECTS = $(patsubst %.c, %.o, $(wildcard [^_]*.c)) $(patsubst %.cb, %.o, $(wildcard */[^_]*.c))
 HEADERS = $(wildcard [^_]*.h) $(wildcard */[^_]*.h)
 
+
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
+	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@ 
+
+force:
+	make clean
+	make
 
 clean:
 	-rm -f *.o

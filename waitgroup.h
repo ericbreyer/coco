@@ -1,11 +1,20 @@
 #pragma once
 #include "coco.h"
+#include <stdlib.h>
 
 struct waitGroup {
     unsigned int counter;
 };
 
-void wg_new(struct waitGroup *wg) { wg->counter = 0; }
+struct waitGroup *wg_new() {
+    struct waitGroup *wg = malloc(sizeof *wg);
+    wg->counter = 0;
+    return wg;
+}
+
+void wg_init(struct waitGroup * wg) {
+    wg->counter = 0;
+}
 
 void wg_add(struct waitGroup *wg, unsigned int numTasks) {
     wg->counter += numTasks;
@@ -24,5 +33,3 @@ int wg_check(struct waitGroup *wg) { return wg->counter == 0; }
             yield();                                                           \
         }                                                                      \
     } while (0)
-
-

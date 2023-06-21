@@ -2,97 +2,81 @@
 #include "coco.h"
 #include "vmac.h"
 #include "waitgroup.h"
+#include <stdbool.h>
 #include <stdio.h>
+// #include <stdlib.h>
 #include <string.h>
 
 INCLUDE_CHANNEL(int,
                 10); // Declare use of an integer channel with buffer size 10
 
-void sigstp_handler(void) {
-    printf("Stopped\n");
-}
+void sigstp_handler(void) { printf("Stopped\n"); }
 
-void sigcont_handler(void) {
-    printf("Continued\n");
-}
+void sigcont_handler(void) { printf("Continued\n"); }
 
-DECLARE_LOCAL_CONTEXT(nats, {
-    int c;
-    channel(int) * ch;
+struct natsArg {
+    channel(int) * c;
     struct waitGroup *wg;
-    uintptr_t delay;
-})
+    long unsigned int delay;
+};
 
 void nats() {
-    sigaction(SIGSTP, sigstp_handler);
-    sigaction(SIGCONT, sigcont_handler);
-    LOCAL(nats).ch = ((void **)CORE.args)[0];
-    LOCAL(nats).delay = ((uintptr_t *)CORE.args)[1];
-    LOCAL(nats).wg = ((void **)CORE.args)[2];
+    int c;
+    struct natsArg *args = ctx->args;
+    sigaction(COCO_SIGSTP, sigstp_handler);
+    sigaction(COCO_SIGCONT, sigcont_handler);
     yield();
-    for (LOCAL(nats).c = 0; LOCAL(nats).c < 10; ++LOCAL(nats).c) {
-        send(int)(LOCAL(nats).ch, LOCAL(nats).c);
-        yieldForMs(LOCAL(nats).delay);
+    for (c = 0; c < 10; ++c) {
+        send(int)(args->c, c);
+        yieldForMs(args->delay);
     }
-    wg_done(LOCAL(nats).wg);
-    close(LOCAL(nats).ch);
-    exit(0);
+    wg_done(args->wg);
+    close(args->c);
+    coco_exit(0);
 }
 
-DECLARE_LOCAL_CONTEXT(kernal, {
-    channel(int) c;
-    channel(int) c2;
-    struct waitGroup wg;
-    int done;
-    void *args1[3];
-    void *args2[3];
-})
-
-#define sleep(i) yieldable_call(_sleep(i))
-void _sleep(int i) {
-    if (i == 0)
-        yieldable_return();
+void sleep() {
+    printf("sleep\n");
     yieldForS(1);
-    i = sleep(--i);
-    yieldable_return(10);
 }
 
 void kernal() {
-    INIT_CHANNEL(LOCAL(kernal).c);
-    INIT_CHANNEL(LOCAL(kernal).c2);
-    wg_new(&LOCAL(kernal).wg);
-    wg_add(&LOCAL(kernal).wg, 2);
-    printf("%d\n",sleep(1));
-    memcpy(
-        LOCAL(kernal).args1,
-        (void *[]){&LOCAL(kernal).c, (void *)(uintptr_t)250, &LOCAL(kernal).wg},
-        3 * sizeof(void *));
-    memcpy(
-        LOCAL(kernal).args2,
-        (void *[]){&LOCAL(kernal).c2, (void *)(uintptr_t)500, &LOCAL(kernal).wg},
-        3 * sizeof(void *));
-    add_task((coroutine)nats, &LOCAL(kernal).args1);
-    add_task((coroutine)nats, &LOCAL(kernal).args2);
+    struct natsArg *arg1 = malloc(sizeof *arg1);
+    struct natsArg *arg2 = malloc(sizeof *arg2);
+    arg1->c = constuctChannel(int)();
+    arg2->c = constuctChannel(int)();
+    struct waitGroup *wg = wg_new();
+    arg1->delay = 250;
+    arg2->delay = 500;
+    arg1->wg = wg;
+    arg2->wg = wg;
+    int t1 = add_task((coroutine)nats, arg1);
+    int t2 = add_task((coroutine)nats, arg2);
+    wg_add(wg, 2);
     for (;;) {
         yield();
         int val;
-        if (extract(int)(&LOCAL(kernal).c, &val) == kOkay) {
+        if (extract(int)(arg1->c, &val) == kOkay) {
             printf("1: %d\n", val);
             if (val == 5) {
-                kill(2, SIGSTP);
+                kill(t1, COCO_SIGSTP);
             }
         }
-        if (extract(int)(&LOCAL(kernal).c2, &val) == kOkay) {
+        if (extract(int)(arg2->c, &val) == kOkay) {
             printf("2: %d\n", val);
-            if (val == 9) {
-                kill(2, SIGCONT);
-            }
         }
-        if (wg_check(&LOCAL(kernal).wg)) {
+        if (coco_waitpid(t2, NULL, WNOHANG)) {
+            kill(t1, COCO_SIGCONT);
+        }
+
+        if (wg_check(wg)) {
             break;
         }
     }
-    exit(1);
+    t1 = add_task((coroutine)sleep, NULL);
+    coco_waitpid(t1, NULL, WNOOPT);
+    sleep();
+    coco_exit(0);
 }
 
-int main() { COCO(kernal) }
+int main() { COCO(kernal); }

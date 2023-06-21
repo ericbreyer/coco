@@ -18,19 +18,16 @@
  */
 enum channel_status { kOkay, kFull, kEmpty, kClosed };
 
+#define constuctChannel(T) constuctChannel_##T
 #define channel(T) channel_##T
 #define extract(T) extract_##T
 #define send(T) send_##T
 
-#define MAKE_CHANNEL(name, T)                                                  \
-    channel(T) name;                                                           \
-    INIT_CHANNEL(name, T)
-
 #define INIT_CHANNEL(name)                                                     \
-    name.bufSize = sizeof(name.buf) / sizeof(name.buf[0]);                     \
-    name.insertPtr = 0;                                                        \
-    name.count = 0;                                                            \
-    name.closed = 0;
+    (name).bufSize = sizeof((name).buf) / sizeof((name).buf[0]);               \
+    (name).insertPtr = 0;                                                      \
+    (name).count = 0;                                                          \
+    (name).closed = 0;
 
 #define close(name) (name)->closed = 1;
 #define closed(name) (name)->closed
@@ -43,6 +40,12 @@ enum channel_status { kOkay, kFull, kEmpty, kClosed };
         int count;                                                             \
         int closed;                                                            \
     } channel(T);                                                              \
+                                                                               \
+    channel(T) * constuctChannel(T)() {                                        \
+        channel(T) *ret = malloc(sizeof *ret);                                 \
+        INIT_CHANNEL(*ret);                                                    \
+        return ret;                                                            \
+    }                                                                          \
                                                                                \
     enum channel_status extract(T)(channel(T) * c, T * out) {                  \
         if (c->count == 0) {                                                   \
