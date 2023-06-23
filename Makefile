@@ -5,11 +5,6 @@ CC = gcc-13
 COCOFLAGS = -D_FORTIFY_SOURCE=0 -fno-move-loop-invariants
 CFLAGS = -g -Wall -Wextra -O3 $(COCOFLAGS)
 
-
-
-# -Wno-infinite-recursion  -fno-stack-protector
-
-
 .PHONY: default all clean force
 .PRECIOUS: $(TARGET) $(OBJECTS)
 
