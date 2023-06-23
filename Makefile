@@ -1,7 +1,7 @@
 TARGET = main.exe
-LIBS = -lm -lc
+LIBS =
 
-CC = gcc-13
+CC = gcc
 COCOFLAGS = -D_FORTIFY_SOURCE=0 -fno-move-loop-invariants
 CFLAGS = -g -Wall -Wextra -O3 $(COCOFLAGS)
 

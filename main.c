@@ -21,12 +21,10 @@ struct natsArg {
 };
 
 void nats() {
-    int c;
     struct natsArg *args = ctx->args;
     sigaction(COCO_SIGSTP, sigstp_handler);
     sigaction(COCO_SIGCONT, sigcont_handler);
-    yield();
-    for (c = 0; c < 10; ++c) {
+    for (int c = 0; c < 10; ++c) {
         send(int)(args->c, c);
         yieldForMs(args->delay);
     }

@@ -15,9 +15,10 @@
 #pragma once
 
 #include <setjmp.h>
-#include <stdio.h>
-#include <string.h>
 #include <time.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 // #include <sys/time.h>
 
 #include "channel.h"
@@ -51,7 +52,7 @@ typedef void (*coroutine)(void);
 struct context {
     jmp_buf caller;      ///< the jump point to yield control to
     jmp_buf resumePoint; ///< the index of the next resume point to pop
-    u_int64_t sigBits;   ///< a bit vector of signals
+    long long int sigBits;   ///< a bit vector of signals
     signalHandler handlers[NUM_SIGNALS]; ///< handler callbacks for said signals
     // Yielding Data
     clock_t waitStart;
@@ -115,17 +116,21 @@ struct context *getContext(int tid);
  */
 int coco_waitpid(int tid, int *exitStatus, int options);
 
-#ifndef getSP
-#include <alloca.h>
-#define getSP() alloca(0)
+#if !defined(getSP) && (defined(WIN32) || defined(__WIN32) || defined(__WIN32__))
+    #include <malloc.h>
+    #define getSP() _alloca(0)
+#elif !defined(getSp)
+    #include <alloca.h>
+    #define getSP() alloca(0)
 #endif
+
 
 #define saveStack()                                                            \
     do {                                                                       \
         void *sp = getSP();                                                    \
         uintptr_t stackSize = (uintptr_t)ctx->frameStart - (uintptr_t)sp;      \
         if (stackSize > USR_CTX_SIZE) {                                        \
-            fprintf(stderr, "Stack too big to store sp:%p fp:%p size:%lu\n",   \
+            fprintf(stderr, "Stack too big to store sp:%p fp:%p size:%llu\n",   \
                     sp, ctx->frameStart, stackSize);                           \
         }                                                                      \
         memcpy(ctx->savedFrame, sp, stackSize);                                \
@@ -183,7 +188,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
         restoreStack();                                                        \
         doSignal();                                                            \
         if ((clock() - ctx->waitStart) * 1000 / CLOCKS_PER_SEC <               \
-            ((long unsigned int)ms)) {                                         \
+            ((clock_t)ms)) {                                         \
             saveStack();                                                       \
             longjmp(ctx->caller, kYielding);                                   \
         }                                                                      \

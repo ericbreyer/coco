@@ -5,3 +5,4 @@ latex/*
 *.o
 *.exe
 .DS_Store
+.vscode/*
