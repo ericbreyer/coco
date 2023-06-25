@@ -39,7 +39,10 @@
         "vmac.h": "c",
         "channel.h": "c",
         "string.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "malloc.h": "c",
+        "signals.h": "c",
+        "config.h": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

@@ -1,10 +1,21 @@
+/**
+ * @file coco.h
+ * @author Eric Breyer (ericbreyer.com)
+ * @brief Demo of use of coco constructs
+ * @version 0.2
+ * @date 2023-05-27
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+
 #include "channel.h"
 #include "coco.h"
 #include "vmac.h"
 #include "waitgroup.h"
 #include <stdbool.h>
 #include <stdio.h>
-// #include <stdlib.h>
+#include <stdlib.h>
 #include <string.h>
 
 INCLUDE_CHANNEL(int,

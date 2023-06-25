@@ -21,7 +21,7 @@
 #include <string.h> ///< memcpy
 #include <time.h>   ///< for yield waits
 
-#include "config.h"
+#include "coco_config.h"
 #include "signals.h"
 #include "vmac.h"
 
@@ -159,7 +159,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
             longjmp(ctx->caller, kYielding);                                   \
         }                                                                      \
         restoreStack();                                                        \
-        doSignal();                                                            \
+        _doSignal();                                                            \
     } while (0)
 
 /**
@@ -174,7 +174,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
             longjmp(ctx->caller, stat);                                        \
         }                                                                      \
         restoreStack();                                                        \
-        doSignal();                                                            \
+        _doSignal();                                                            \
     } while (0)
 
 /**
@@ -190,7 +190,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
             longjmp(ctx->caller, kYielding);                                   \
         }                                                                      \
         restoreStack();                                                        \
-        doSignal();                                                            \
+        _doSignal();                                                            \
         if ((clock() - ctx->waitStart) * 1000 / CLOCKS_PER_SEC <               \
             ((clock_t)ms)) {                                                   \
             saveStack();                                                       \

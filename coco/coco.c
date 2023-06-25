@@ -1,3 +1,15 @@
+/**
+ * @file coco.c
+ * @author Eric Breyer (ericbreyer.com)
+ * @brief Definition for the core functionality of the COCO tiny
+ * scheduler/runtime
+ * @version 0.2
+ * @date 2023-05-27
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+
 #include "coco.h"
 
 /**

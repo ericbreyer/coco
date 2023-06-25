@@ -1,6 +1,17 @@
-// get number of arguments with __NARG__
-#define __NARG__(...)  __NARG_I_(__VA_ARGS__ __VA_OPT__(,) __RSEQ_N())
-#define __NARG_I_(...) __ARG_N(__VA_ARGS__)
+/**
+ * @file vmac.h
+ * @author Eric Breyer (ericbreyer.com)
+ * @brief Utility macro for creating function overloads.
+ * @version 0.2
+ * @date 2023-05-27
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+
+// get number of arguments with __NARGS__
+#define __NARGS__(...)  __NARGS_I_(__VA_ARGS__ __VA_OPT__(,) __RSEQ_N())
+#define __NARGS_I_(...) __ARG_N(__VA_ARGS__)
 #define __ARG_N( \
      _1, _2, _3, _4, _5, _6, _7, _8, _9,_10, \
      _11,_12,_13,_14,_15,_16,_17,_18,_19,_20, \
@@ -21,4 +32,4 @@
 // general definition for any function name
 #define _VMAC_(name, n) name##n
 #define _VMAC(name, n) _VMAC_(name, n)
-#define VMAC(func, ...) _VMAC(func, __NARG__(__VA_ARGS__)) (__VA_ARGS__)
+#define VMAC(func, ...) _VMAC(func, __NARGS__(__VA_ARGS__)) (__VA_ARGS__)
