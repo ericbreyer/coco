@@ -42,7 +42,9 @@
         "time.h": "c",
         "malloc.h": "c",
         "signals.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "stdbool.h": "c",
+        "waitgroup.h": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

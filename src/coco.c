@@ -131,7 +131,7 @@ int coco_waitpid(int tid, int *exitStatus, int options) {
             }
             return tid;
         }
-        if (options & WNOHANG) {
+        if (options & COCO_WNOHANG) {
             break;
         }
         yield();
@@ -142,6 +142,6 @@ int coco_waitpid(int tid, int *exitStatus, int options) {
 void coco_start(coroutine kernal) {
     int exit;
     for (int kernalid = add_task((coroutine)kernal, NULL);
-         !coco_waitpid(kernalid, &exit, WNOHANG); runTasks()) {
+         !coco_waitpid(kernalid, &exit, COCO_WNOHANG); runTasks()) {
     }
 }

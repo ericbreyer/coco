@@ -1,5 +1,5 @@
 /**
- * @file coco.h
+ * @file example1.c
  * @author Eric Breyer (ericbreyer.com)
  * @brief Demo of use of coco constructs
  * @version 0.2
@@ -9,14 +9,14 @@
  *
  */
 
-#include "channel.h"
-#include "coco.h"
-#include "vmac.h"
-#include "waitgroup.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "channel.h"
+#include "coco.h"
+#include "waitgroup.h"
 
 INCLUDE_CHANNEL(int,
                 10); // Declare use of an integer channel with buffer size 10
@@ -35,7 +35,7 @@ void nats() {
     struct natsArg *args = ctx->args;
     sigaction(COCO_SIGSTP, sigstp_handler);
     sigaction(COCO_SIGCONT, sigcont_handler);
-    for (int c = 0; c < 10; ++c) {
+    for (coco int c = 0; c < 10; ++c) {
         send(int)(args->c, c);
         yieldForMs(args->delay);
     }
@@ -80,7 +80,7 @@ void kernal() {
             if (extract(int)(arg2->c, &val) == kOkay) {
                 printf("2: %d\n", val);
             }
-            if (coco_waitpid(t2, NULL, WNOHANG)) {
+            if (coco_waitpid(t2, NULL, COCO_WNOHANG)) {
                 kill(t1, COCO_SIGCONT);
             }
 
@@ -88,9 +88,9 @@ void kernal() {
                 break;
             }
         }
-        coco_waitpid(t1, NULL, WNOHANG);
+        coco_waitpid(t1, NULL, COCO_WNOHANG);
         t1 = add_task((coroutine)sleep, NULL);
-        coco_waitpid(t1, NULL, WNOOPT);
+        coco_waitpid(t1, NULL, COCO_WNOOPT);
     }
     coco_exit(0);
 }

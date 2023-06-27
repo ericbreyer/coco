@@ -1,0 +1,1 @@
+target_sources(coco PRIVATE waitgroup.c)

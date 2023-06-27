@@ -114,8 +114,10 @@ void stopRunningTask();
  */
 struct context *getContext(int tid);
 
-#define WNOOPT (0)
-#define WNOHANG (1 << 0)
+#define coco volatile
+
+#define COCO_WNOOPT (0)
+#define COCO_WNOHANG (1 << 0)
 /**
  * @brief checks if a task has exited, reaping it and getting its exit status if
  * so
