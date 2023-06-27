@@ -56,42 +56,40 @@ void kernal() {
     struct waitGroup *wg = malloc(sizeof *wg);
     arg1->c = malloc(sizeof *arg1->c);
     arg2->c = malloc(sizeof *arg2->c);
-    while (1) {
-        init_channel(arg1->c);
-        init_channel(arg2->c);
-        init_wg(wg);
-        arg1->delay = 250;
-        arg2->delay = 500;
-        arg1->wg = wg;
-        arg2->wg = wg;
-        int t1 = add_task((coroutine)nats, arg1);
-        int t2 = add_task((coroutine)nats, arg2);
-        printf("Spawn TID's (%d,%d)\n", t1, t2);
-        wg_add(wg, 2);
-        for (;;) {
-            yield();
-            int val;
-            if (extract(int)(arg1->c, &val) == kOkay) {
-                printf("1: %d\n", val);
-                if (val == 5) {
-                    kill(t1, COCO_SIGSTP);
-                }
-            }
-            if (extract(int)(arg2->c, &val) == kOkay) {
-                printf("2: %d\n", val);
-            }
-            if (coco_waitpid(t2, NULL, COCO_WNOHANG)) {
-                kill(t1, COCO_SIGCONT);
-            }
-
-            if (wg_check(wg)) {
-                break;
+    init_channel(arg1->c);
+    init_channel(arg2->c);
+    init_wg(wg);
+    arg1->delay = 250;
+    arg2->delay = 500;
+    arg1->wg = wg;
+    arg2->wg = wg;
+    int t1 = add_task((coroutine)nats, arg1);
+    int t2 = add_task((coroutine)nats, arg2);
+    printf("Spawn TID's (%d,%d)\n", t1, t2);
+    wg_add(wg, 2);
+    for (;;) {
+        yield();
+        int val;
+        if (extract(int)(arg1->c, &val) == kOkay) {
+            printf("1: %d\n", val);
+            if (val == 5) {
+                kill(t1, COCO_SIGSTP);
             }
         }
-        coco_waitpid(t1, NULL, COCO_WNOHANG);
-        t1 = add_task((coroutine)sleep, NULL);
-        coco_waitpid(t1, NULL, COCO_WNOOPT);
+        if (extract(int)(arg2->c, &val) == kOkay) {
+            printf("2: %d\n", val);
+        }
+        if (coco_waitpid(t2, NULL, COCO_WNOHANG)) {
+            kill(t1, COCO_SIGCONT);
+        }
+
+        if (wg_check(wg)) {
+            break;
+        }
     }
+    coco_waitpid(t1, NULL, COCO_WNOHANG);
+    t1 = add_task((coroutine)sleep, NULL);
+    coco_waitpid(t1, NULL, COCO_WNOOPT);
     coco_exit(0);
 }
 

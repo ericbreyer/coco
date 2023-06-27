@@ -42,7 +42,7 @@ void kernal() {
     arg2->c = malloc(sizeof *arg2->c);
     init_channel(arg1->c);
     init_channel(arg2->c);
-    arg1->delay = 250;
+    arg1->delay = 300;
     arg2->delay = 500;
     int t1 = add_task((coroutine)nats, arg1);
     int t2 = add_task((coroutine)nats, arg2);
