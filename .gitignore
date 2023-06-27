@@ -1,9 +1,8 @@
 html/*
 latex/*
-.vscode
 *.out
 *.o
 *.exe
 .DS_Store
-.vscode
+.vscode/
 build
