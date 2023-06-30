@@ -13,7 +13,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
 target_compile_options(coco PUBLIC -fno-move-loop-invariants -Wall -Wextra)
 endif()
 
-target_compile_options(coco PUBLIC -g  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -Zi -Z7)
+target_compile_options(coco PUBLIC -g  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0)
 target_include_directories(coco PUBLIC src)
 add_subdirectory(src)
 install(TARGETS coco)
