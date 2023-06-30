@@ -57,6 +57,8 @@ enum task_status runTask(int i) {
     int ret;
     if ((ret = setjmp(tasks[i].ctx.caller)) == 0) {
         ctx = getContext(i);
+                char *sp = getSP();
+        ctx->frameStart = sp;
         longjmp(ctx->resumePoint, 0 + 1);
     }
     return ret;

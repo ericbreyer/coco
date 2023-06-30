@@ -29,7 +29,7 @@ struct natsArg {
 
 void nats() {
     struct natsArg *args = ctx->args;
-    for (coco int c = 0; c < 10; ++c) {
+    for (int c = 0; c < 10; ++c) {
         send(int)(args->c, c);
         yieldForMs(args->delay);
     }

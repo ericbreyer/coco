@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
+# set(CMAKE_C_COMPILER "gcc")
+# set(CMAKE_CXX_COMPILER "g++")
 
 project(coco VERSION 1.0.0 LANGUAGES C)
 cmake_policy(SET CMP0076 NEW)
@@ -9,13 +9,11 @@ include(CTest)
 
 add_library(coco SHARED)
 
-set(CMAKE_CXX_FLAGS "-g -O3 -D_FORTIFY_SOURCE=0")
-if(CMAKE_COMPILER_IS_GNUCXX)
-    message(STATUS "GCC detected, adding compile flags")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -pedantic -Wall -Wextra")
-endif(CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_COMPILER_IS_GNUCC)
+target_compile_options(coco PUBLIC -fno-move-loop-invariants -Wall -Wextra)
+endif()
 
-target_compile_options(coco PUBLIC )
+target_compile_options(coco PUBLIC -g -O3 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0)
 target_include_directories(coco PUBLIC src)
 add_subdirectory(src)
 install(TARGETS coco)

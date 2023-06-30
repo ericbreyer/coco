@@ -72,7 +72,7 @@ struct context {
     void *args;
     char savedFrame[USR_CTX_SIZE];
     void *frameStart;
-    size_t frameSize;
+    ptrdiff_t frameSize;
 };
 
 /**
@@ -114,8 +114,6 @@ void stopRunningTask();
  */
 struct context *getContext(int tid);
 
-#define coco volatile
-
 #define COCO_WNOOPT (0)
 #define COCO_WNOHANG (1 << 0)
 /**
@@ -131,6 +129,9 @@ struct context *getContext(int tid);
 int coco_waitpid(int tid, int *exitStatus, int options);
 #define coco_wait(tid) coco_waitpid(tid, NULL, WNOOPT)
 #define coco_join(tid) coco_wait(tid)
+
+#define MIN(a, b) ((a) < (b)) ? (a) : (b)
+#define ABS(a) (a) > 0 ? (a) : (0-(a))
 
 #define saveStack()                                                            \
     do {                                                                       \
@@ -159,7 +160,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
         saveStack();                                                           \
         if (setjmp(ctx->resumePoint) == 0) {                                   \
             longjmp(ctx->caller, kYielding);                                   \
-        }                                                                      \
+        } else {}                                                                     \
         restoreStack();                                                        \
         _doSignal();                                                            \
     } while (0)
@@ -174,7 +175,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
         saveStack();                                                           \
         if (setjmp(ctx->resumePoint) == 0) {                                   \
             longjmp(ctx->caller, stat);                                        \
-        }                                                                      \
+        } else {}                                                                     \
         restoreStack();                                                        \
         _doSignal();                                                            \
     } while (0)
@@ -190,7 +191,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
         ctx->waitStart = clock();                                              \
         if (setjmp(ctx->resumePoint) == 0) {                                   \
             longjmp(ctx->caller, kYielding);                                   \
-        }                                                                      \
+        } else {}                                                                      \
         restoreStack();                                                        \
         _doSignal();                                                            \
         if ((clock() - ctx->waitStart) * 1000 / CLOCKS_PER_SEC <               \
