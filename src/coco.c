@@ -81,7 +81,7 @@ enum task_status startTask(int i) {
         // if a task returns normally, just gracefully exit for it
         // but assert that this should never happen in debug mode
         assert(0 && "All threads should call coco_exit, never return");
-        coco_exit();
+        coco_exit(0);
     }
     return ret;
 }
@@ -128,7 +128,7 @@ int coco_waitpid(int tid, int *exitStatus, int options) {
     for (;;) {
         if (getStatus(tid) == kDone) {
             tasks[tid].status = kDead;
-            if (exitStatus) {
+            if (exitStatus != NULL) {
                 *exitStatus = getContext(tid)->exitStatus;
             }
             return tid;

@@ -12,6 +12,12 @@
 
 /// @defgroup core
 /// @{
+#ifdef _WIN32
+
+#pragma runtime_checks( "", off )
+
+#endif
+
 #pragma once
 
 #include <assert.h> ///< exit
@@ -23,7 +29,6 @@
 
 #include "coco_config.h"
 #include "signals.h"
-#include "vmac.h"
 
 /**
  * @brief functions and include to get the stack pointer for stack saving
@@ -85,13 +90,13 @@ extern struct context *ctx;
  * @brief Start the tiny runtime
  *
  * @param[in] kernal the first task to run
- * 
+ *
  * @note coco will exit when the kernal task exits
  */
 void coco_start(coroutine kernal);
 
 /**
- * 
+ *
  * @brief Adds a task to the scheduler
  * @ingroup functions
  * @param[in] func the function that the task will run
@@ -131,12 +136,12 @@ int coco_waitpid(int tid, int *exitStatus, int options);
 #define coco_join(tid) coco_wait(tid)
 
 #define MIN(a, b) ((a) < (b)) ? (a) : (b)
-#define ABS(a) (a) > 0 ? (a) : (0-(a))
+#define ABS(a) (a) > 0 ? (a) : (0 - (a))
 
 #define saveStack()                                                            \
     do {                                                                       \
         void *sp = getSP();                                                    \
-        ptrdiff_t stackSize = ctx->frameStart - sp;                            \
+        ptrdiff_t stackSize = (char *)ctx->frameStart - (char *)sp;            \
         assert((stackSize < USR_CTX_SIZE) &&                                   \
                "Stack too big to store, increase stack storage limit or fix "  \
                "program.");                                                    \
@@ -160,9 +165,10 @@ int coco_waitpid(int tid, int *exitStatus, int options);
         saveStack();                                                           \
         if (setjmp(ctx->resumePoint) == 0) {                                   \
             longjmp(ctx->caller, kYielding);                                   \
-        } else {}                                                                     \
+        } else {                                                               \
+        }                                                                      \
         restoreStack();                                                        \
-        _doSignal();                                                            \
+        _doSignal();                                                           \
     } while (0)
 
 /**
@@ -175,9 +181,10 @@ int coco_waitpid(int tid, int *exitStatus, int options);
         saveStack();                                                           \
         if (setjmp(ctx->resumePoint) == 0) {                                   \
             longjmp(ctx->caller, stat);                                        \
-        } else {}                                                                     \
+        } else {                                                               \
+        }                                                                      \
         restoreStack();                                                        \
-        _doSignal();                                                            \
+        _doSignal();                                                           \
     } while (0)
 
 /**
@@ -191,9 +198,10 @@ int coco_waitpid(int tid, int *exitStatus, int options);
         ctx->waitStart = clock();                                              \
         if (setjmp(ctx->resumePoint) == 0) {                                   \
             longjmp(ctx->caller, kYielding);                                   \
-        } else {}                                                                      \
+        } else {                                                               \
+        }                                                                      \
         restoreStack();                                                        \
-        _doSignal();                                                            \
+        _doSignal();                                                           \
         if ((clock() - ctx->waitStart) * 1000 / CLOCKS_PER_SEC <               \
             ((clock_t)ms)) {                                                   \
             saveStack();                                                       \
@@ -214,10 +222,8 @@ int coco_waitpid(int tid, int *exitStatus, int options);
  * @param[in, opt] status the exit status (optional - default 0)
  *
  */
-#define coco_exit(...) VMAC(_exit, __VA_ARGS__)
-#define _exit0() _exit(0)
-#define _exit1(i) _exit(i)
-#define _exit(i)                                                               \
+
+#define coco_exit(i)                                                           \
     do {                                                                       \
         setjmp(ctx->resumePoint);                                              \
         ctx->exitStatus = i;                                                   \
