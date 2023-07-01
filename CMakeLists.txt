@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_C_COMPILER "/usr/local/bin/gcc")
 set(CMAKE_CXX_COMPILER "g++")
 
 project(coco VERSION 1.0.0 LANGUAGES C)
@@ -9,11 +9,12 @@ include(CTest)
 
 add_library(coco STATIC)
 
-if(CMAKE_COMPILER_IS_GNUCC)
-target_compile_options(coco PUBLIC -fno-move-loop-invariants -Wall -Wextra)
-endif()
+set(problemChildren 
+-fno-tree-forwprop
+-fno-omit-frame-pointer
+)
 
-target_compile_options(coco PUBLIC -g  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -O3)
+target_compile_options(coco PUBLIC -g -O3 ${problemChildren} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -Wall -Wextra)
 target_include_directories(coco PUBLIC src)
 add_subdirectory(src)
 install(TARGETS coco)

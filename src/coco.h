@@ -12,10 +12,9 @@
 
 /// @defgroup core
 /// @{
+
 #ifdef _WIN32
-
 #pragma runtime_checks( "", off )
-
 #endif
 
 #pragma once
@@ -29,19 +28,6 @@
 
 #include "coco_config.h"
 #include "signals.h"
-
-/**
- * @brief functions and include to get the stack pointer for stack saving
- *
- */
-#if !defined(getSP) &&                                                         \
-    (defined(WIN32) || defined(__WIN32) || defined(__WIN32__))
-#include <malloc.h>
-#define getSP() _alloca(0)
-#elif !defined(getSp)
-#include <alloca.h>
-#define getSP() alloca(0)
-#endif
 
 /**
  * @brief Possible states a (non-running) task can be in.
@@ -135,98 +121,34 @@ int coco_waitpid(int tid, int *exitStatus, int options);
 #define coco_wait(tid) coco_waitpid(tid, NULL, WNOOPT)
 #define coco_join(tid) coco_wait(tid)
 
-#define MIN(a, b) ((a) < (b)) ? (a) : (b)
-#define ABS(a) (a) > 0 ? (a) : (0 - (a))
-
-#define saveStack()                                                            \
-    do {                                                                       \
-        void *sp = getSP();                                                    \
-        ptrdiff_t stackSize = (char *)ctx->frameStart - (char *)sp;            \
-        assert((stackSize < USR_CTX_SIZE) &&                                   \
-               "Stack too big to store, increase stack storage limit or fix "  \
-               "program.");                                                    \
-        memcpy(ctx->savedFrame, sp, stackSize);                                \
-        ctx->frameSize = stackSize;                                            \
-    } while (0)
-
-#define restoreStack()                                                         \
-    do {                                                                       \
-        void *sp = getSP();                                                    \
-        ptrdiff_t stackSize = ctx->frameSize;                                  \
-        memcpy(sp, ctx->savedFrame, stackSize);                                \
-    } while (0)
-
 /**
  * @brief Yeild to the OS.
  *
  */
-#define yield()                                                                \
-    do {                                                                       \
-        saveStack();                                                           \
-        if (setjmp(ctx->resumePoint) == 0) {                                   \
-            longjmp(ctx->caller, kYielding);                                   \
-        } else {                                                               \
-        }                                                                      \
-        restoreStack();                                                        \
-        _doSignal();                                                           \
-    } while (0)
-
+void yield();
 /**
  * @brief Yeild to the OS with a status.
  *
  * @param[in] stat an enum task_status
  */
-#define yieldStatus(stat)                                                      \
-    do {                                                                       \
-        saveStack();                                                           \
-        if (setjmp(ctx->resumePoint) == 0) {                                   \
-            longjmp(ctx->caller, stat);                                        \
-        } else {                                                               \
-        }                                                                      \
-        restoreStack();                                                        \
-        _doSignal();                                                           \
-    } while (0)
-
+void yieldStatus(enum task_status stat);
 /**
  * @brief Continuously yield to the OS for a time period
  *
  * @param[in] ms said time period in milliseconds
  */
-#define yieldForMs(ms)                                                         \
-    do {                                                                       \
-        saveStack();                                                           \
-        ctx->waitStart = clock();                                              \
-        if (setjmp(ctx->resumePoint) == 0) {                                   \
-            longjmp(ctx->caller, kYielding);                                   \
-        } else {                                                               \
-        }                                                                      \
-        restoreStack();                                                        \
-        _doSignal();                                                           \
-        if ((clock() - ctx->waitStart) * 1000 / CLOCKS_PER_SEC <               \
-            ((clock_t)ms)) {                                                   \
-            saveStack();                                                       \
-            longjmp(ctx->caller, kYielding);                                   \
-        }                                                                      \
-    } while (0)
-
+void yieldForMs(unsigned int ms);
 /**
  * @brief Continuously yield to the OS for a time period
  *
  * @param[in] s said time period in seconds
  */
-#define yieldForS(s) yieldForMs(s * 1000)
-
+void yieldForS(unsigned int s);;
 /**
  * @brief Exit the process with an exit status
  *
- * @param[in, opt] status the exit status (optional - default 0)
- *
+ * @param[in] status the exit status
  */
+void coco_exit(unsigned int stat);
 
-#define coco_exit(i)                                                           \
-    do {                                                                       \
-        setjmp(ctx->resumePoint);                                              \
-        ctx->exitStatus = i;                                                   \
-        longjmp(ctx->caller, kDone);                                           \
-    } while (0)
 /// @}

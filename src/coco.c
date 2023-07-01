@@ -57,8 +57,6 @@ enum task_status runTask(int i) {
     int ret;
     if ((ret = setjmp(tasks[i].ctx.caller)) == 0) {
         ctx = getContext(i);
-                char *sp = getSP();
-        ctx->frameStart = sp;
         longjmp(ctx->resumePoint, 0 + 1);
     }
     return ret;
@@ -75,7 +73,7 @@ enum task_status startTask(int i) {
     if ((ret = setjmp(tasks[i].ctx.caller)) == 0) {
         ctx = getContext(i);
 
-        char *sp = getSP();
+        defineSP();
         ctx->frameStart = sp;
         tasks[i].func();
         // if a task returns normally, just gracefully exit for it
@@ -90,7 +88,7 @@ void stopRunningTask() { tasks[currentTid].status = kStopped; }
 
 /**
  * @brief run all currently running tasks once
- * 
+ *
  */
 void runTasks() {
     int i;
@@ -115,7 +113,7 @@ void runTasks() {
 }
 /**
  * @brief Get the Status of a task
- * 
+ *
  * @param[in] tid the id of the task
  * @return enum task_status representing said status
  */
@@ -146,4 +144,66 @@ void coco_start(coroutine kernal) {
     for (int kernalid = add_task((coroutine)kernal, NULL);
          !coco_waitpid(kernalid, &exit, COCO_WNOHANG); runTasks()) {
     }
+}
+
+#define saveStack()                                                            \
+    do {                                                                       \
+        defineSP();                                                    \
+        ptrdiff_t stackSize = (char *)ctx->frameStart - (char *)sp;            \
+        assert((stackSize < USR_CTX_SIZE) &&                                   \
+               "Stack too big to store, increase stack storage limit or fix "  \
+               "program.");                                                    \
+        memcpy(ctx->savedFrame, sp, stackSize);                                \
+        ctx->frameSize = stackSize;                                            \
+    } while (0)
+
+//         fprintf(stderr, "saving %ld from %p to %p\n", stackSize, ctx->frameStart, sp);
+
+#define restoreStack()                                                         \
+    do {                                                                       \
+        defineSP();                                                    \
+        ptrdiff_t stackSize = ctx->frameSize;                                  \
+        memcpy(sp, ctx->savedFrame, stackSize);                                \
+    } while (0)
+
+void yield() {
+    saveStack();
+    if (setjmp(ctx->resumePoint) == 0) {
+        longjmp(ctx->caller, kYielding);
+    } else {
+    }
+    restoreStack();
+    _doSignal();
+}
+
+void yieldStatus(enum task_status stat) {
+    saveStack();
+    if (setjmp(ctx->resumePoint) == 0) {
+        longjmp(ctx->caller, stat);
+    } else {
+    }
+    restoreStack();
+    _doSignal();
+}
+
+void yieldForMs(unsigned int ms) {
+    saveStack();
+    ctx->waitStart = clock();
+    if (setjmp(ctx->resumePoint) == 0) {
+        longjmp(ctx->caller, kYielding);
+    } else {
+    }
+    restoreStack();
+    _doSignal();
+    if ((clock() - ctx->waitStart) * 1000 / CLOCKS_PER_SEC < ((clock_t)ms)) {
+        saveStack();
+        longjmp(ctx->caller, kYielding);
+    }
+}
+inline void yieldForS(unsigned int s) { yieldForMs(s * 1000); }
+
+void coco_exit(unsigned int stat) {
+    setjmp(ctx->resumePoint);
+    ctx->exitStatus = stat;
+    longjmp(ctx->caller, kDone);
 }
