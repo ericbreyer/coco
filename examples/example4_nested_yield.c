@@ -16,19 +16,19 @@
 
 #include "coco.h"
 
+static int c = 10;
 void sleep() {
-    static int c;
-    printf("tick %d\n", c++);
+    printf("tick %d\n", c);
     yieldForS(1);
-    if(c == 10) {
-        coco_exit(0);
+    if(c-- <= 0) {
+        return;
     }
+    sleep();
 }
 
 void kernal() {
-    while (1) {
-        sleep();
-    }
+    sleep();
+    coco_exit(0);
 }
 
 int main() { coco_start(kernal); }

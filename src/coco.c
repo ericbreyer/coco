@@ -203,7 +203,7 @@ void yieldForMs(unsigned int ms) {
 inline void yieldForS(unsigned int s) { yieldForMs(s * 1000); }
 
 void coco_exit(unsigned int stat) {
-    setjmp(ctx->resumePoint);
     ctx->exitStatus = stat;
+    setjmp(ctx->resumePoint);
     longjmp(ctx->caller, kDone);
 }
