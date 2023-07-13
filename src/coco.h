@@ -125,7 +125,7 @@ int coco_waitpid(int tid, int *exitStatus, int options);
  * @brief Yeild to the OS.
  *
  */
-void yield();
+void coco_yield();
 /**
  * @brief Yeild to the OS with a status.
  *

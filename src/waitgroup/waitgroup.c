@@ -28,6 +28,6 @@ void wg_wait(struct waitGroup *wg) {
         if (wg->counter == 0) {
             return;
         }
-        yield();
+        coco_yield();
     }
 }

@@ -68,7 +68,7 @@ void kernal() {
     printf("Spawn TID's (%d,%d)\n", t1, t2);
     wg_add(wg, 2);
     for (;;) {
-        yield();
+        coco_yield();
         int val;
         if (extract(int)(arg1->c, &val) == kOkay) {
             printf("1: %d\n", val);

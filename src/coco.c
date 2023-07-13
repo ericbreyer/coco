@@ -134,7 +134,7 @@ int coco_waitpid(int tid, int *exitStatus, int options) {
         if (options & COCO_WNOHANG) {
             break;
         }
-        yield();
+        coco_yield();
     }
     return 0;
 }
@@ -166,7 +166,7 @@ void coco_start(coroutine kernal) {
         memcpy(sp, ctx->savedFrame, stackSize);                                \
     } while (0)
 
-void yield() {
+void coco_yield() {
     saveStack();
     if (setjmp(ctx->resumePoint) == 0) {
         longjmp(ctx->caller, kYielding);
