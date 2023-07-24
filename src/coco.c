@@ -195,7 +195,7 @@ void yieldForMs(unsigned int ms) {
     }
     restoreStack();
     _doSignal();
-    if ((clock() - ctx->waitStart) * 1000 / CLOCKS_PER_SEC < ((clock_t)ms)) {
+    if ((((clock() - ctx->waitStart) * 1000) * CLOCKS_TO_MS) < ((clock_t)ms)) {
         saveStack();
         longjmp(ctx->caller, kYielding);
     }

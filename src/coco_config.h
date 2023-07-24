@@ -11,11 +11,13 @@
 
 #pragma once
 
-#define MAX_TASKS (1 << 7)
-#define USR_CTX_SIZE (1 << 11) // Max size of user data context segment
+#define MAX_TASKS (1 << 4)
+#define USR_CTX_SIZE (1 << 9) // Max size of user data context segment
+
+#define CLOCKS_TO_MS (1.0 / CLOCKS_PER_SEC)
 
 // #define defineSP() register void * sp asm("sp")
-// #define defineSP() register void * sp = __builtin_frame_address(0)
+ #define defineSP() register void * sp = __builtin_frame_address(0)
 /**
  * @brief functions and include to get the stack pointer for stack saving
  *

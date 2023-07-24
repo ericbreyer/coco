@@ -27,7 +27,7 @@
 #include <time.h>   ///< for yield waits
 
 #include "coco_config.h"
-#include "signals.h"
+#include "./signals/signals.h"
 
 /**
  * @brief Possible states a (non-running) task can be in.
@@ -50,6 +50,7 @@ typedef void (*coroutine)(void);
  * @brief All the context a coroutine needs to resume in the right place with
  * it's data.
  */
+#pragma pack(push, 1)
 struct context {
     jmp_buf caller;        ///< the jump point to yield control to
     jmp_buf resumePoint;   ///< the index of the next resume point to pop
@@ -65,7 +66,7 @@ struct context {
     void *frameStart;
     ptrdiff_t frameSize;
 };
-
+#pragma pack(pop)
 /**
  * @brief Global for the current context. (Dont have access to multiple cores,
  * so only one task runs at a time).

@@ -3,8 +3,9 @@ use std::path::PathBuf;
 
 fn main() {
     
-    println!("cargo:rustc-link-search=native={}", "/Users/ebreyer/Documents/GitHub/miniCoroutines/build/");
+    println!("cargo:rustc-link-search=native={}", "../build");
     println!("cargo:rustc-link-lib=static={}", "coco");
+    // println!("cargo:rustc-link-lib=static={}", "ubsan");
 
     // let bindings = bindgen::builder()
     //     // The input header we would like to generate

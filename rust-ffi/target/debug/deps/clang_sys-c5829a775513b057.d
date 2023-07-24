@@ -1,0 +1,14 @@
+/Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/deps/clang_sys-c5829a775513b057.rmeta: /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/lib.rs /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/support.rs /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/link.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/macros.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/common.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/dynamic.rs
+
+/Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/deps/libclang_sys-c5829a775513b057.rlib: /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/lib.rs /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/support.rs /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/link.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/macros.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/common.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/dynamic.rs
+
+/Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/deps/clang_sys-c5829a775513b057.d: /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/lib.rs /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/support.rs /Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/link.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/macros.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/common.rs /Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/dynamic.rs
+
+/Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/lib.rs:
+/Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/support.rs:
+/Users/ebreyer/.cargo/registry/src/github.com-1ecc6299db9ec823/clang-sys-1.6.1/src/link.rs:
+/Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/macros.rs:
+/Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/common.rs:
+/Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out/dynamic.rs:
+
+# env-dep:OUT_DIR=/Users/ebreyer/Documents/GitHub/miniCoroutines/rust-ffi/target/debug/build/clang-sys-853df73f696095ea/out
