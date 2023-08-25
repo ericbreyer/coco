@@ -14,13 +14,7 @@ set(problemChildren
 -fno-omit-frame-pointer
 )
 
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-set(sanitizers -fsanitize=undefined -fsanitize-undefined-trap-on-error)
-else()
-set(sanitizers)
-endif()
-
-target_compile_options(coco PUBLIC -g -O3 ${problemChildren} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -Wall -Wextra ${sanitizers})
+target_compile_options(coco PUBLIC -g -O3 ${problemChildren} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -Wall -Wextra)
 target_link_options(coco PUBLIC ${sanitizers})
 target_include_directories(coco PUBLIC src)
 add_subdirectory(src)

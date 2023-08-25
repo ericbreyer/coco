@@ -16,8 +16,8 @@
 
 #include "coco.h"
 
-static int c = 10;
 void sleep() {
+    static int c = 10;
     printf("tick %d\n", c);
     yieldForS(1);
     if(c-- <= 0) {
