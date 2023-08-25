@@ -13,7 +13,8 @@ coco is a tiny, lightwight, portable, and cooperative scheduler for C. It's use 
 - Task exit status
 - Task reaping to obtain exit status and check aliveness
 - No dynamic memory allocations behind the scenes
-- 
+- Defered procedure call for interupt and signal handling
+
 ### signals
 - Inspired by UNIX-style signals
 - Default signal handlers
