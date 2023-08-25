@@ -11,9 +11,18 @@
  */
 
 #include "signals.h"
-#include "coco.h"
+#include "coco.c"
 
 void kill(int tid, enum sig signal) { getContext(tid)->sigBits |= SIG_MASK(signal); }
+
+void sendStop() {
+    saveStack();
+    if (setjmp(ctx->resumePoint) == 0) {
+        longjmp(ctx->caller, kStopped);
+    } else {
+    }
+    restoreStack();
+}
 
 void _doSignal(void) {
     int stopped = ctx->sigBits & SIG_MASK(COCO_SIGSTP);
@@ -24,7 +33,7 @@ void _doSignal(void) {
         }
     }
     if(stopped) {
-        yieldStatus(kStopped);
+        sendStop();
     }
 }
 

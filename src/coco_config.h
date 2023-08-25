@@ -17,7 +17,7 @@
 #define CLOCKS_TO_MS (1.0 / CLOCKS_PER_SEC)
 
 // #define defineSP() register void * sp asm("sp")
- #define defineSP() register void * sp = __builtin_frame_address(0)
+#define defineSP() register void * sp = __builtin_frame_address(0)
 /**
  * @brief functions and include to get the stack pointer for stack saving
  *

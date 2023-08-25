@@ -63,5 +63,4 @@ void kernal() {
     coco_exit(0);
 }
 
-int main() { coco_start(kernal); 
-printf("%lu\n", sizeof(*ctx));}
+int main() { coco_start(kernal); }

@@ -32,20 +32,34 @@ int currentTid;
  */
 static struct task tasks[MAX_TASKS + 1];
 
+void init_task(int i, coroutine func, void *args) {
+    tasks[i].status = kNew;
+    tasks[i].func = func,
+    tasks[i].ctx = (struct context){
+        .args = args,
+        .waitStart = clock(),
+        .handlers = {default_sigint, default_sigstp, default_sigcont}};
+}
+
+int add_dpc(coroutine func, void *args) {
+    if (tasks[0].status != kDead) {
+        fprintf(stderr, "Already a dpc running");
+        return 0;
+    }
+    init_task(0, func, args);
+    return 1;
+}
+
 int add_task(coroutine func, void *args) {
     for (int i = 1; i <= MAX_TASKS; ++i) {
         if (tasks[i].status == kDead) {
-            tasks[i].status = kNew;
-            tasks[i].func = func,
-            tasks[i].ctx = (struct context){
-                .args = args,
-                .waitStart = clock(),
-                .handlers = {default_sigint, default_sigstp, default_sigcont}};
+            init_task(i, func, args);
             return i;
         }
     }
     return 0;
 }
+
 
 /**
  * @brief Run a single task that has already been started/
@@ -91,23 +105,25 @@ void stopRunningTask() { tasks[currentTid].status = kStopped; }
  *
  */
 void runTasks() {
-    int i;
-    for (i = 1; i <= MAX_TASKS; ++i) {
-        currentTid = i;
-        switch (tasks[i].status) {
-        case kYielding:
-            tasks[i].status = runTask(i);
-            break;
-        case kNew:
-            tasks[i].status = startTask(i);
-            break;
-        case kStopped:
-            if (tasks[i].ctx.sigBits & SIG_MASK(COCO_SIGCONT)) {
-                tasks[i].status = runTask(i);
+    int i, task;
+    for (task = 1; task <= MAX_TASKS; ++task) {
+        for(i = 0; i <= 1; ++i) {
+            currentTid = i == 0 ? 0 : task;
+            switch (tasks[currentTid].status) {
+            case kYielding:
+                tasks[currentTid].status = runTask(currentTid);
+                break;
+            case kNew:
+                tasks[currentTid].status = startTask(currentTid);
+                break;
+            case kStopped:
+                if (tasks[currentTid].ctx.sigBits & SIG_MASK(COCO_SIGCONT)) {
+                    tasks[currentTid].status = runTask(i);
+                }
+                break;
+            default:
+                break;
             }
-            break;
-        default:
-            break;
         }
     }
 }
@@ -148,7 +164,7 @@ void coco_start(coroutine kernal) {
 
 #define saveStack()                                                            \
     do {                                                                       \
-        defineSP();                                                    \
+        defineSP();                                                            \
         ptrdiff_t stackSize = (char *)ctx->frameStart - (char *)sp;            \
         assert((stackSize < USR_CTX_SIZE) &&                                   \
                "Stack too big to store, increase stack storage limit or fix "  \
@@ -157,11 +173,12 @@ void coco_start(coroutine kernal) {
         ctx->frameSize = stackSize;                                            \
     } while (0)
 
-//         fprintf(stderr, "saving %ld from %p to %p\n", stackSize, ctx->frameStart, sp);
+//         fprintf(stderr, "saving %ld from %p to %p\n", stackSize,
+//         ctx->frameStart, sp);
 
 #define restoreStack()                                                         \
     do {                                                                       \
-        defineSP();                                                    \
+        defineSP();                                                            \
         ptrdiff_t stackSize = ctx->frameSize;                                  \
         memcpy(sp, ctx->savedFrame, stackSize);                                \
     } while (0)

@@ -26,6 +26,7 @@
 #include <string.h> ///< memcpy
 #include <time.h>   ///< for yield waits
 
+
 #include "coco_config.h"
 #include "./signals/signals.h"
 
@@ -151,5 +152,7 @@ void yieldForS(unsigned int s);;
  * @param[in] status the exit status
  */
 void coco_exit(unsigned int stat);
+
+int add_dpc(coroutine func, void *args);
 
 /// @}

@@ -6,3 +6,4 @@ latex/*
 .DS_Store
 .vscode/
 build
+rust-ffi/target/
