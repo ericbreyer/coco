@@ -63,10 +63,11 @@ void sleep() {
     coco_exit(0);
 }
 
+void kernal() {
+
 static struct natsArg arg1, arg2;
 static struct waitGroup wg;
 
-void kernal() {
     init_channel(&arg1.c);
     init_channel(&arg2.c);
     init_wg(&wg);
