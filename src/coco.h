@@ -30,10 +30,13 @@
 #include "coco_config.h"
 #include "./signals/signals.h"
 
+#define UPCAST void *
+
 /**
  * @brief Possible states a (non-running) task can be in.
  */
 enum task_status {
+    kUDead,
     kDead,     ///< Not running, memory can be repurposed
     kDone,     ///< Not running, not yet reaped
     kYielding, ///< Running normally
@@ -66,6 +69,7 @@ struct context {
     char savedFrame[USR_CTX_SIZE];
     void *frameStart;
     ptrdiff_t frameSize;
+    int detached;
 };
 #pragma pack(pop)
 /**
@@ -153,6 +157,20 @@ void yieldForS(unsigned int s);;
  */
 void coco_exit(unsigned int stat);
 
+void coco_detach();
+
 int add_dpc(coroutine func, void *args);
+
+#define lambda(return_type, function_body)                                     \
+    ({ return_type __fn__ function_body; __fn__; })
+
+#define unary_to_thread(func)                                                  \
+    lambda(                                                                    \
+        void, (void) {                                                         \
+            func(ctx->args);                                                           \
+            coco_exit(0);                                                      \
+        })
+
+#define coco_while(cond) for(;cond;coco_yield())
 
 /// @}

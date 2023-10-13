@@ -14,15 +14,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "channel.h"
+#include "coco_channel.h"
 #include "coco.h"
 
 // Declare use of an integer channel with buffer size 10
-INCLUDE_CHANNEL(int, 10);
+INCLUDE_CHANNEL(int);
+INCLUDE_SIZED_CHANNEL(int, 10)
 
 // Declare form of args that the nats routine will take
 struct natsArg {
-    channel(int) c;
+    sized_channel(int, 10) c;
     long unsigned int delay;
 };
 
@@ -45,8 +46,8 @@ void kernal() {
     // initialize the channels and argument structs (in static memory since they
     // will be passed across stack contexts)
     static struct natsArg arg1, arg2;
-    init_channel(&arg1.c);
-    init_channel(&arg2.c);
+    init_channel(&arg1.c, 10);
+    init_channel(&arg2.c, 10);
     arg1.delay = 300;
     arg2.delay = 500;
 
@@ -55,22 +56,16 @@ void kernal() {
     int t2 = add_task((coroutine)nats, &arg2);
     printf("Spawn TID's (%d,%d)\n", t1, t2);
 
-    for (;;) {
-        // let the OS do other things
-        coco_yield();
-
+    coco_while (!(closed(&arg1.c) && closed(&arg2.c))) {
         // if there is a value in a channel, print it
         int val;
-        if (extract(int)(&arg1.c, &val) == kOkay) {
-            printf("1: %d\n", val);
-        }
-        if (extract(int)(&arg2.c, &val) == kOkay) {
-            printf("2: %d\n", val);
-        }
-
-        // we are done checking channels when they are both closed
-        if (closed(&arg1.c) && closed(&arg2.c)) {
-            break;
+        channel(int) *csel[2] = {&arg1.c, &arg2.c};
+        chan_select((UPCAST)csel, 2);
+        for (int i = 0; i < 2; ++i) {
+            if (read_ready(csel[i]) && !closed(csel[i])) {
+                extract(int)(csel[i], &val);
+                printf("%d: %d\n", i, val);
+            }
         }
     }
 

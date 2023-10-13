@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2023
  *
  */
-
+#include <stdbool.h>
 #include "coco.h"
 
 /**
@@ -38,11 +38,12 @@ void init_task(int i, coroutine func, void *args) {
     tasks[i].ctx = (struct context){
         .args = args,
         .waitStart = clock(),
-        .handlers = {default_sigint, default_sigstp, default_sigcont}};
+        .handlers = {default_sigint, default_sigstp, default_sigcont},
+        .detached = false};
 }
 
 int add_dpc(coroutine func, void *args) {
-    if (tasks[0].status != kDead) {
+    if (tasks[0].status != kDead && tasks[0].status != kUDead) {
         fprintf(stderr, "Already a dpc running");
         return 0;
     }
@@ -52,7 +53,7 @@ int add_dpc(coroutine func, void *args) {
 
 int add_task(coroutine func, void *args) {
     for (int i = 1; i <= MAX_TASKS; ++i) {
-        if (tasks[i].status == kDead) {
+        if (tasks[i].status == kDead || tasks[i].status == kUDead) {
             init_task(i, func, args);
             return i;
         }
@@ -219,8 +220,12 @@ void yieldForMs(unsigned int ms) {
 }
 inline void yieldForS(unsigned int s) { yieldForMs(s * 1000); }
 
+void coco_detach() {
+    ctx->detached = true;
+}
+
 void coco_exit(unsigned int stat) {
     ctx->exitStatus = stat;
     setjmp(ctx->resumePoint);
-    longjmp(ctx->caller, kDone);
+    longjmp(ctx->caller, ctx->detached ? kDead : kDone);
 }

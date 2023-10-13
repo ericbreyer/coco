@@ -1,1 +1,1 @@
-target_sources(coco PRIVATE channel.h)
+target_sources(coco PRIVATE coco_channel.h)

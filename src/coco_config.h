@@ -11,8 +11,8 @@
 
 #pragma once
 
-#define MAX_TASKS (1 << 4)
-#define USR_CTX_SIZE (1 << 9) // Max size of user data context segment
+#define MAX_TASKS (1 << 8)
+#define USR_CTX_SIZE (1 << 12) // Max size of user data context segment
 
 #define CLOCKS_TO_MS (1.0 / CLOCKS_PER_SEC)
 

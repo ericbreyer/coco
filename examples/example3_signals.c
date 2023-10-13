@@ -14,32 +14,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "channel.h"
+#include "coco_channel.h"
 #include "coco.h"
 #include "waitgroup.h"
 
-INCLUDE_CHANNEL(int,
-                10); // Declare use of an integer channel with buffer size 10
-
-void fn() {
-    while (1) {
-        printf("DPC\n");
-        coco_yield();
-    }
-}
+INCLUDE_CHANNEL(int); // Declare use of an integer channel with buffer size 10
+INCLUDE_SIZED_CHANNEL(int, 10);
 
 void sigstp_handler(void) {
     printf("Stopped\n");
-    add_dpc(fn, NULL);
 }
 
 void sigcont_handler(void) {
     printf("Continued\n");
-    kill(0, COCO_SIGINT);
 }
 
 struct natsArg {
-    channel(int) c;
+    sized_channel(int, 10) c;
     struct waitGroup *wg;
     long unsigned int delay;
 };
@@ -65,11 +56,11 @@ void sleep() {
 
 void kernal() {
 
-static struct natsArg arg1, arg2;
-static struct waitGroup wg;
+    static struct natsArg arg1, arg2;
+    static struct waitGroup wg;
 
-    init_channel(&arg1.c);
-    init_channel(&arg2.c);
+    init_channel(&arg1.c, 10);
+    init_channel(&arg2.c, 10);
     init_wg(&wg);
     arg1.delay = 250;
     arg2.delay = 500;
@@ -79,24 +70,22 @@ static struct waitGroup wg;
     int t2 = add_task((coroutine)nats, &arg2);
     printf("Spawn TID's (%d,%d)\n", t1, t2);
     wg_add(&wg, 2);
-    for (;;) {
-        coco_yield();
+    coco_while(!wg_check(&wg)) {
+        // if there is a value in a channel, print it
         int val;
-        if (extract(int)(&arg1.c, &val) == kOkay) {
-            printf("1: %d\n", val);
-            if (val == 5) {
-                kill(t1, COCO_SIGSTP);
+        channel(int) *csel[2] = {&arg1.c, &arg2.c};
+        chan_select((gen_channel **)csel, 2);
+        for (int i = 0; i < 2; ++i) {
+            if (read_ready(csel[i]) && !closed(csel[i])) {
+                extract(int)(csel[i], &val);
+                if (i == 0 && val == 5) {
+                    kill(t1, COCO_SIGSTP);
+                }
+                printf("%d: %d\n", i, val);
             }
-        }
-        if (extract(int)(&arg2.c, &val) == kOkay) {
-            printf("2: %d\n", val);
         }
         if (coco_waitpid(t2, NULL, COCO_WNOHANG)) {
             kill(t1, COCO_SIGCONT);
-        }
-
-        if (wg_check(&wg)) {
-            break;
         }
     }
     coco_waitpid(t1, NULL, COCO_WNOHANG);
