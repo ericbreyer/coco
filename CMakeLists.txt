@@ -10,12 +10,19 @@ include(CTest)
 add_library(coco STATIC)
 
 set(problemChildren 
--fno-tree-forwprop
--fno-omit-frame-pointer
+# -fno-tree-forwprop
+# -fno-omit-frame-pointer
+-U_FORTIFY_SOURCE 
+-D_FORTIFY_SOURCE=0 
 )
+
+#if compiler is gcc
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    set(gccFlags "-fplan9-extensions")
+endif()
+
 # https://gcc.gnu.org/onlinedocs/gcc/Unnamed-Fields.html
-target_compile_options(coco PUBLIC -g -O3 ${problemChildren} -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -Wall -Wextra -fplan9-extensions -std=c99)
-target_link_options(coco PUBLIC ${sanitizers})
+target_compile_options(coco PUBLIC -g -O3 ${problemChildren} -Wall -Wextra -fms-extensions ${gccFlags})
 target_include_directories(coco PUBLIC src)
 add_subdirectory(src)
 install(TARGETS coco)
@@ -27,6 +34,9 @@ example4_nested_yield;\
 example5_counter;\
 example6_counter_nobuff;\
 example7_counter_servicer;\
+example8_counter_semaphore;\
+example9_fork;\
+example10_dpc;\
 test7_counter_servicer")
 
 foreach(ex IN LISTS exs)
@@ -34,5 +44,10 @@ add_executable(${ex} ./examples/${ex}.c)
 target_link_libraries(${ex} coco)
 add_test(NAME ${ex} COMMAND ./${ex})
 endforeach()
+
+add_executable(chatServer ./examples/chatServer.c)
+target_link_libraries(chatServer coco)
+add_executable(chatClient ./examples/chatClient.c)
+target_link_libraries(chatClient coco)
 
 add_custom_target(force COMMAND make clean && make)

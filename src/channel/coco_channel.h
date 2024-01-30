@@ -12,6 +12,7 @@
 
 #pragma once
 #include <assert.h>
+#include <stdbool.h>
 
 /**
  * @brief The status of a channel transaction.
@@ -19,29 +20,17 @@
  */
 enum channel_status { kOkay, kFull, kEmpty, kReadOnly, kClosed, kUnbuffTings };
 
-// /**
-//  * @brief "generic" type definitions
-//  *
-//  */
-#define extract(T) extract_##T
-#define send(T) send_##T
-#define channel(T) channel_##T
-
 #define __concat(X, Y) X##Y
-#define _concat(X, Y) __concat(X, Y)
-#define sized_channel(T, S) _concat(channel_##T, _##S)
+#define concat(X, Y) __concat(X, Y)
 
 /**
- * @brief close a channel
+ * @brief "generic" type definitions
  *
  */
-#define close(name) ((gen_channel *)name)->closed = 1
-
-/**
- * @brief check if a channel has been closed
- *
- */
-#define closed(name) ((gen_channel *)name)->closed
+#define extract(T) concat(extract_, T)
+#define send(T) concat(send_, T)
+#define channel(T) concat(channel_, T)
+#define sized_channel(T, S) concat(concat(channel_, T), concat(_, S))
 
 /**                                                                        \
  * @brief the structure of a channel, the core of it is a circular buffer  \
@@ -49,7 +38,7 @@ enum channel_status { kOkay, kFull, kEmpty, kReadOnly, kClosed, kUnbuffTings };
  *                                                                         \
  */
 
-typedef struct s_gen_channel {
+struct channel_base {
     enum { kBuffered, kUnbuffered } type : 1;
     union {
         struct {
@@ -66,38 +55,56 @@ typedef struct s_gen_channel {
     int closed : 1;
     int read_ready : 1;
     int write_ready : 1;
-} gen_channel;
+};
 
-#define write_ready(c) c->write_ready
-#define read_ready(c) c->read_ready
+bool write_ready(struct channel_base * c) {
+    return c->write_ready;
+}
+bool read_ready(struct channel_base * c) {
+    return c->read_ready;
+}
+
+/**
+ * @brief close a channel
+ *
+ */
+void close(struct channel_base * c) {
+    c->closed = 1;
+}
+
+/**
+ * @brief check if a channel has been closed
+ *
+ */
+bool closed(struct channel_base * c){
+    return c->closed;
+}
 
 #define INCLUDE_SIZED_CHANNEL(T, S)                                            \
-                                                                               \
-    typedef struct _concat(s_, sized_channel(T, S)) {                          \
-        channel(T);                                                            \
+    struct sized_channel(T, S) {                                               \
+        struct channel(T);                                                     \
         T __buf[S > 0 ? S : 1];                                                \
-    }                                                                          \
-    sized_channel(T, S);
+    }
 
 /**                                                                        \
  * @brief initialize an allocated channel pointer                          \
  *                                                                         \
  */
-void init_channel(gen_channel * _c, int S) {
+void init_channel(struct channel_base *c, int S) {
     if (S > 0) {
-        (_c)->bufData.bufSize = S;
-        (_c)->bufData.insertPtr = 0;
-        (_c)->bufData.count = 0;
-        (_c)->type = kBuffered;
+        (c)->bufData.bufSize = S;
+        (c)->bufData.insertPtr = 0;
+        (c)->bufData.count = 0;
+        (c)->type = kBuffered;
     } else {
-        (_c)->ubufData.reader_waiting = 0;
-        (_c)->ubufData.writer_waiting = 0;
-        (_c)->ubufData.sync_done = 0;
-        (_c)->type = kUnbuffered;
+        (c)->ubufData.reader_waiting = 0;
+        (c)->ubufData.writer_waiting = 0;
+        (c)->ubufData.sync_done = 0;
+        (c)->type = kUnbuffered;
     }
-    (_c)->closed = 0;
-    (_c)->read_ready = 0;
-    (_c)->write_ready = 0;
+    (c)->closed = 0;
+    (c)->read_ready = 0;
+    (c)->write_ready = 0;
 }
 
 // /**
@@ -105,16 +112,14 @@ void init_channel(gen_channel * _c, int S) {
 //  * "generic" channel type
 //  *
 //  * @param T the type the channels contain
-//  * @param max the max size of the channel FIFO for this type
 //  *
 //  */
 #define INCLUDE_CHANNEL(T)                                                     \
                                                                                \
-    typedef struct _concat(s_, channel(T)) {                                   \
-        gen_channel;                                                           \
+    static struct channel(T) {                                                        \
+        struct channel_base;                                                   \
         T buf[0];                                                              \
-    }                                                                          \
-    channel(T);                                                                \
+    };                                                                         \
                                                                                \
     /**                                                                        \
      * @brief extract a member from the fifo if non-empty                      \
@@ -125,7 +130,7 @@ void init_channel(gen_channel * _c, int S) {
      * @return the state of the transaction as an enum channel_status          \
      *                                                                         \
      */                                                                        \
-    enum channel_status extract(T)(channel(T) * c, T * out) {                  \
+    static enum channel_status extract(T)(struct channel(T) * c, T * out) {           \
         switch (c->type) {                                                     \
         case kBuffered:                                                        \
             if (c->bufData.count == 0 && closed(c)) {                          \
@@ -167,7 +172,7 @@ void init_channel(gen_channel * _c, int S) {
      * @return the state of the transaction as an enum channel_status          \
      *                                                                         \
      */                                                                        \
-    enum channel_status send(T)(channel(T) * c, T data) {                      \
+    static enum channel_status send(T)(struct channel(T) * c, T data) {               \
         switch (c->type) {                                                     \
         case kBuffered:                                                        \
             if (closed(c))                                                     \
@@ -204,7 +209,7 @@ void init_channel(gen_channel * _c, int S) {
  * @return the state of the transaction as an enum channel_status          \
  *                                                                         \
  */
-enum channel_status status(gen_channel *c) {
+enum channel_status status(struct channel_base *c) {
     switch (c->type) {
     case kBuffered:
         if (closed(c) && c->bufData.count > 0)
@@ -236,7 +241,7 @@ enum channel_status status(gen_channel *c) {
     assert(0);
 }
 
-void chan_select(gen_channel *cs[], int num_channels) {
+void chan_select(int num_channels, struct channel_base *cs[num_channels]) {
     for (int i = 0; i < num_channels; ++i) {
         cs[i]->read_ready = 0;
         cs[i]->write_ready = 0;

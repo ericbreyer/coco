@@ -14,17 +14,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "coco_channel.h"
 #include "coco.h"
+#include "coco_channel.h"
 #include "waitgroup.h"
 
 // Declare use of an integer channel with buffer size 10
 INCLUDE_CHANNEL(int);
-INCLUDE_SIZED_CHANNEL(int, 0)
-
+INCLUDE_SIZED_CHANNEL(int, 0);
 
 struct counter {
-    sized_channel(int, 0) count;
+    struct sized_channel(int, 0) count;
 };
 
 struct send_args {
@@ -32,27 +31,27 @@ struct send_args {
     int n;
 };
 
-void send_num() {
+void send_num(struct send_args *a) {
+    printf("Sending %d\n", a->n);
     coco_detach();
-    struct send_args *a = ctx->args;
     send(int)(&a->c->count, a->n);
     free(a);
     coco_exit(0);
 }
 
 void counter_increment(struct counter *this) {
-    channel(int) *c =  & this->count;
+    struct channel(int) *c = &this->count;
     int curr;
     extract(int)(c, &curr);
     curr++;
     struct send_args *a = malloc(sizeof *a);
     a->c = this;
     a->n = curr;
-    add_task(send_num, a);
+    add_task((coroutine)send_num, a);
 }
 
 int counter_read(struct counter *this, int final) {
-    channel(int) *c =  & this->count;
+    struct channel(int) *c = &this->count;
     int val;
     extract(int)(c, &val);
     if (final) {
@@ -61,7 +60,7 @@ int counter_read(struct counter *this, int final) {
         struct send_args *a = malloc(sizeof *a);
         a->c = this;
         a->n = val;
-        add_task(send_num, a);
+        add_task((coroutine)send_num, a);
     }
     return val;
 }
@@ -71,7 +70,7 @@ void construct_counter(struct counter *this) {
     struct send_args *a = malloc(sizeof *a);
     a->c = this;
     a->n = 0;
-    add_task(send_num, a);
+    add_task((coroutine)send_num, a);
 }
 
 // the first task we want to spawn
@@ -81,10 +80,12 @@ void kernal() {
     construct_counter(&c);
     int tids[100];
     for (int i = 0; i < 100; ++i) {
-        tids[i] = add_task(unary_to_thread(counter_increment), &c);
+        tids[i] = add_task((coroutine)counter_increment, &c);
+        printf("Spawn %d\n", tids[i]);
     }
     for (int i = 0; i < 100; ++i) {
         counter_increment(&c);
+
     }
     for (int i = 0; i < 100; ++i) {
         coco_waitpid(tids[i], NULL, COCO_WNOOPT);
@@ -95,4 +96,4 @@ void kernal() {
 }
 
 // start the scheduler with the main task
-int main() { coco_start(kernal); }
+int main() { coco_start(kernal, NULL); }

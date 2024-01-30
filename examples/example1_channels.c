@@ -19,18 +19,15 @@
 
 // Declare use of an integer channel with buffer size 10
 INCLUDE_CHANNEL(int);
-INCLUDE_SIZED_CHANNEL(int, 10)
+INCLUDE_SIZED_CHANNEL(int, 10);
 
 // Declare form of args that the nats routine will take
 struct natsArg {
-    sized_channel(int, 10) c;
+    struct sized_channel(int, 10) c;
     long unsigned int delay;
 };
 
-void nats() {
-    // a coroutine has access to it's context
-    struct natsArg *args = ctx->args;
-
+void nats(struct natsArg *args) {
     // count and send every args->delay Ms
     for (int c = 0; c < 10; ++c) {
         send(int)(&args->c, c);
@@ -59,8 +56,8 @@ void kernal() {
     coco_while (!(closed(&arg1.c) && closed(&arg2.c))) {
         // if there is a value in a channel, print it
         int val;
-        channel(int) *csel[2] = {&arg1.c, &arg2.c};
-        chan_select((UPCAST)csel, 2);
+        struct channel(int) *csel[2] = {&arg1.c, &arg2.c};
+        chan_select(2, (struct channel_base**)csel);
         for (int i = 0; i < 2; ++i) {
             if (read_ready(csel[i]) && !closed(csel[i])) {
                 extract(int)(csel[i], &val);
@@ -71,9 +68,11 @@ void kernal() {
 
     // reap the tasks
     coco_waitpid(t1, NULL, COCO_WNOOPT);
+    printf("T1 Reaped\n");
     coco_waitpid(t2, NULL, COCO_WNOOPT);
+    printf("T2 Reaped\n");
     coco_exit(0);
 }
 
 // start the scheduler with the main task
-int main() { coco_start(kernal); }
+int main() { coco_start(kernal, NULL); }

@@ -30,15 +30,14 @@ void sigcont_handler(void) {
 }
 
 struct natsArg {
-    sized_channel(int, 10) c;
+    struct sized_channel(int, 10) c;
     struct waitGroup *wg;
     long unsigned int delay;
 };
 
-void nats() {
-    struct natsArg *args = ctx->args;
-    sigaction(COCO_SIGSTP, sigstp_handler);
-    sigaction(COCO_SIGCONT, sigcont_handler);
+void nats(struct natsArg * args) {
+    coco_sigaction(COCO_SIGSTP, sigstp_handler);
+    coco_sigaction(COCO_SIGCONT, sigcont_handler);
     for (int c = 0; c < 10; ++c) {
         send(int)(&args->c, c);
         yieldForMs(args->delay);
@@ -51,6 +50,7 @@ void nats() {
 void sleep() {
     printf("sleep\n");
     yieldForS(1);
+    printf("awake\n");
     coco_exit(0);
 }
 
@@ -73,25 +73,28 @@ void kernal() {
     coco_while(!wg_check(&wg)) {
         // if there is a value in a channel, print it
         int val;
-        channel(int) *csel[2] = {&arg1.c, &arg2.c};
-        chan_select((gen_channel **)csel, 2);
+        struct channel(int) *csel[2] = {&arg1.c, &arg2.c};
+        chan_select(2, (struct channel_base **)csel);
         for (int i = 0; i < 2; ++i) {
             if (read_ready(csel[i]) && !closed(csel[i])) {
                 extract(int)(csel[i], &val);
-                if (i == 0 && val == 5) {
-                    kill(t1, COCO_SIGSTP);
-                }
                 printf("%d: %d\n", i, val);
+                if (i == 0 && val == 5) {
+                    coco_kill(t1, COCO_SIGSTP);
+                }
+                
             }
         }
         if (coco_waitpid(t2, NULL, COCO_WNOHANG)) {
-            kill(t1, COCO_SIGCONT);
+            coco_kill(t1, COCO_SIGCONT);
         }
     }
     coco_waitpid(t1, NULL, COCO_WNOHANG);
     t1 = add_task((coroutine)sleep, NULL);
+    printf("Sleeping tid=%d\n", t1);
     coco_waitpid(t1, NULL, COCO_WNOOPT);
+    printf("Done\n");
     coco_exit(0);
 }
 
-int main() { coco_start(kernal); }
+int main() { coco_start(kernal, NULL); }

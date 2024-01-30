@@ -1,1 +1,0 @@
-target_sources(coco PRIVATE signals.h signals.c)

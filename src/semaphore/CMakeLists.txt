@@ -1,0 +1,1 @@
+target_sources(coco PRIVATE semaphore.h semaphore.c)

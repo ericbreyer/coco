@@ -47,7 +47,7 @@ struct natsArg {
 
 void nats() {
     // a coroutine has access to it's context
-    struct natsArg *args = ctx->args;
+    struct natsArg *args = getArgs();
 
     // count and send every args->delay Ms
     for (int c = 0; c < 10; ++c) {

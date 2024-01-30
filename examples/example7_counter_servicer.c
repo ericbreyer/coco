@@ -20,29 +20,28 @@
 
 // Declare use of an integer channel with buffer size 10
 INCLUDE_CHANNEL(int);
-INCLUDE_SIZED_CHANNEL(int, 0)
+INCLUDE_SIZED_CHANNEL(int, 0);
 
 struct counter {
-    sized_channel(int, 0) inc;
-    sized_channel(int, 0) read;
-    sized_channel(int, 0) ctx;
+    struct sized_channel(int, 0) inc;
+    struct sized_channel(int, 0) read;
+    struct sized_channel(int, 0) ctx;
 };
 
-void servicer(void) {
-    struct counter * c = ctx->args;
+void servicer(struct counter * c) {
     int i = 0;
     int j;
-    gen_channel *csel[3] = {&c->inc, &c->read, &c->ctx};
+    struct channel_base *csel[3] = {&c->inc, &c->read, &c->ctx};
     while(1) {
-        chan_select(csel, 3);
-        if (c->inc.read_ready) {
+        chan_select(3, csel);
+        if (read_ready(&c->inc)) {
             extract(int)(&c->inc, &j);
             ++i;
         }
-        if (c->read.write_ready) {
+        if (write_ready(&c->read)){
             send(int)(&c->read, i);
         }
-        if (c->ctx.read_ready) {
+        if (read_ready(&c->ctx)) {
             break;
         }
         coco_yield();
@@ -54,7 +53,7 @@ void init_counter(struct counter * c) {
     init_channel(&c->inc, 0);
     init_channel(&c->read, 0);
     init_channel(&c->ctx, 0);
-    add_task(servicer, c);
+    add_task((coroutine) servicer, c);
 }
 
 void inc(struct counter * c) {
@@ -76,14 +75,6 @@ void inc100(struct counter * c) {
     }
 }
 
-struct A {
-    int i;
-};
-
-struct B {
-    struct A;
-};
-
 // the first task we want to spawn
 void kernal() {
 
@@ -91,7 +82,7 @@ void kernal() {
     init_counter(&c);
     int tids[5];
     for (int i = 0; i < 5; ++i) {
-        tids[i] = add_task(unary_to_thread(inc100), &c);
+        tids[i] = add_task((coroutine)inc100, &c);
     }
     for (int i = 0; i < 5; ++i) {
         inc100(&c);
@@ -104,13 +95,9 @@ void kernal() {
     coco_yield();
     printf("%d\n", val);
 
-    struct B b;
-    b.i = 1;
-    printf("%d\n", b.i);
-
     coco_exit(0);
     
 }
 
 // start the scheduler with the main task
-int main() { coco_start(kernal); }
+int main() { coco_start(kernal, NULL); }

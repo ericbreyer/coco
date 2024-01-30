@@ -17,14 +17,17 @@
 #include "coco_channel.h"
 #include "coco.h"
 #include "waitgroup.h"
+#include "semaphore.h"
 
 // Declare use of an integer channel with buffer size 10
 INCLUDE_CHANNEL(int);
-INCLUDE_SIZED_CHANNEL(int, 1);
+INCLUDE_SIZED_CHANNEL(int, 0);
 
 struct counter {
-    struct sized_channel(int, 1) count;
+    struct sized_channel(int, 0) count;
 };
+coco_sem sem;
+
 
 void counter_increment(struct counter *this) {
     struct channel(int) *c =  & this->count;
@@ -56,6 +59,7 @@ struct inc_arg {
 void inc_task(struct inc_arg *arg) {
     counter_increment(&arg->c);
     wg_done(&arg->wg);
+        coco_sem_post(&sem);
     coco_exit(0);
 }
 
@@ -65,7 +69,9 @@ void kernal() {
     construct_counter(&arg.c);
     init_wg(&arg.wg);
     wg_add(&arg.wg, 100);
+    coco_sem_init(&sem, 1);
     for (int i = 0; i < 100; ++i) {
+        coco_sem_wait(&sem);
         add_task((coroutine)inc_task, &arg);
     }
     int tids[100];
