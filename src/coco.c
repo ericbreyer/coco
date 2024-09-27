@@ -11,6 +11,7 @@
  */
 #include "coco.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 /**
  * Struct: context
@@ -213,7 +214,7 @@ enum task_status startTask(struct task *t) {
     return ret;
 }
 
-void stopRunningTask() { currentTask->status = kStopped; }
+void stopRunningTask() { currentTask->status = kStopped; coco_yield(); }
 
 void runDPCs() {
     while (1) {
@@ -235,7 +236,7 @@ void runDPCs() {
         if (dpcs.next == &dpcs) {
             break;
         }
-    } // PUT THEM ON DIFFERENT THREADSs
+    } // PUT THEM ON DIFFERENT THREADS
 }
 
 /**
@@ -269,6 +270,13 @@ void runTasks() {
  * @return enum task_status representing said status
  */
 enum task_status getStatus(int tid) { return tasks[tid].status; }
+
+/**
+ * @brief: Get the Context of a task
+ *
+ * @param[in]: tid the id of the task
+ * return: struct context*
+ */
 struct context *getContext(int tid) {
     return (struct context *)&tasks[tid].ctx;
 }
@@ -292,7 +300,7 @@ int coco_waitpid(int tid, int *exitStatus, int options) {
 }
 
 void coco_start(coroutine kernal, void *args) {
-    int exit;
+    int texit;
     freeTasks.next = &freeTasks;
     freeTasks.prev = &freeTasks;
     runningTasks.next = &runningTasks;
@@ -304,9 +312,10 @@ void coco_start(coroutine kernal, void *args) {
     }
 
     for (int kernalid = add_task((coroutine)kernal, args);
-         !coco_waitpid(kernalid, &exit, COCO_WNOHANG);) {
+         !coco_waitpid(kernalid, &texit, COCO_WNOHANG);) {
         runTasks();
     }
+    exit(texit);
 }
 
 #define saveStack()                                                            \
@@ -382,7 +391,7 @@ size_t next_free_task() {
 }
 
 int coco_fork() {
-    size_t tid = next_free_task();
+    volatile size_t tid = next_free_task();
     if (tid == 0) {
         return 0;
     }

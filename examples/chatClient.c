@@ -92,8 +92,8 @@ void kernal(struct host_port *p) {
 	}
     printf("Connected to %s:%s\n", host, port);
 
-    int tid = add_task((coroutine)echo, (void *)clientfd);
-    add_task((coroutine)sendstdin, (void *)clientfd);
+    int tid = add_task(AS_COROUTINE(echo), (void *)clientfd);
+    add_task(AS_COROUTINE(sendstdin), (void *)clientfd);
     coco_waitpid(tid, NULL, 0);
 
     close(clientfd);

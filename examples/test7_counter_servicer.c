@@ -103,12 +103,8 @@ void kernal() {
     coco_yield();
     printf("%d\n", val);
 
-    struct B b;
-    b.i = 1;
-    printf("%d\n", b.i);
-
     if(val != 1000) {
-        exit(1);
+        coco_exit(1);
     }
 
     coco_exit(0);

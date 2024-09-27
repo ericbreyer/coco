@@ -6,9 +6,9 @@
  * @brief: Declaration for the core functionality of the COCO tiny
  * scheduler/runtime
  *
- * Version: 0.3
+ * Version: 0.4
  *
- * Date: 2023-10-14
+ * Date: 2024-9-26
  *
  * Copyright: Copyright (c) 2023
  *
@@ -35,11 +35,25 @@
 
 /**
  * Type: coroutine
- * A coroutine (thread/process) should only enter and exit through
- * longjmps, so the function should not take or return anything.
+ * A coroutine (thread/process) is a function that can be paused and resumed
+ * at a later time.
+ * 
+ * @param[in]: void* the arguments to the coroutine
+ * 
+ * @return: never returns
  */
 typedef void (*coroutine)(void *);
-
+#if defined(__GNUC__)
+    #define AS_COROUTINE(from_ptr) ({ \
+        _Pragma("GCC diagnostic push") \
+        _Pragma("GCC diagnostic ignored \"-Wcast-function-type\"") \
+        coroutine result = (coroutine)(from_ptr); \
+        _Pragma("GCC diagnostic pop") \
+        result; \
+    })
+#else
+    #define AS_COROUTINE(from_ptr) ((coroutine)(from_ptr))
+#endif
 /**
  * @brief: Start the tiny runtime
  *
@@ -50,7 +64,6 @@ typedef void (*coroutine)(void *);
 void coco_start(coroutine kernal, void *args);
 
 /**
- *
  * @brief: Adds a task to the scheduler
  * ingroup: functions
  * @param[in]: func the function that the task will run
@@ -64,14 +77,6 @@ int add_task(coroutine func, void *args);
  *
  */
 void stopRunningTask();
-
-/**
- * @brief: Get the Context of a task
- *
- * @param[in]: tid the id of the task
- * return: struct context*
- */
-struct context *getContext(int tid);
 
 #define COCO_WNOOPT (0)
 #define COCO_WNOHANG (1 << 0)

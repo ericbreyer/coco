@@ -116,7 +116,7 @@ void init_channel(struct channel_base *c, int S) {
 //  */
 #define INCLUDE_CHANNEL(T)                                                     \
                                                                                \
-    static struct channel(T) {                                                        \
+    struct channel(T) {                                                        \
         struct channel_base;                                                   \
         T buf[0];                                                              \
     };                                                                         \

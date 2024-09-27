@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "coco_channel.h"
 #include "coco.h"
@@ -32,7 +33,7 @@ void sleep(uintptr_t time) {
 
 void sigstp_handler(void) {
     printf("Stopped\n");
-    add_dpc((coroutine)sleep, 5);
+    add_dpc(AS_COROUTINE(sleep), (void *)(uintptr_t)5);
 }
 
 void sigcont_handler(void) {
@@ -93,7 +94,7 @@ void kernal() {
         }
     }
     coco_waitpid(t1, NULL, COCO_WNOHANG);
-    t1 = add_task((coroutine)sleep, 1);
+    t1 = add_task(AS_COROUTINE(sleep), (void *)(uintptr_t)1);
     printf("Sleeping tid=%d\n", t1);
     coco_waitpid(t1, NULL, COCO_WNOOPT);
     printf("Done\n");

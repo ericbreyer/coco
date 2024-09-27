@@ -2,6 +2,29 @@
 # coco
 coco is a tiny, lightwight, portable, and cooperative scheduler for C. It's use and primatives are heavily based of off Go's goroutines, channels and waitgroups. Coco can be used to as a simple library for "Green" threads and coroutines in C, while signals make coco act like a small concurrent (though not parallel) operating system.
 
+## instalation
+### build from source
+```bash
+git clone https://github.com/ericbreyer/coco
+cd coco
+mkdir build
+cd build
+cmake -B . -S ..
+make
+make install
+```
+### verify installation
+```bash
+make test
+```
+### use as a library
+```c
+#include <coco.h>
+```
+```bash
+gcc -o myprog myprog.c -lcoco
+```
+
 ## coco features:
 ### core scheduler
 

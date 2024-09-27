@@ -6,14 +6,14 @@ use crate::root as coco;
 use std::ffi::*;
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
-type coroutine = extern "C" fn();
+type coroutine = extern "C" fn(*mut libc::c_void);
 
 fn getContext(tid: i32) -> &'static mut coco::context {
     unsafe { coco::getContext(tid).as_mut().unwrap() }
 }
 
 fn coco_start(kernal: coroutine) {
-    unsafe { coco::coco_start(Some(kernal)) }
+    unsafe { coco::coco_start(Some(kernal), core::ptr::null_mut()) }
 }
 fn coco_exit(i: c_uint) {
     unsafe { coco::coco_exit(i) }
@@ -39,17 +39,16 @@ fn add_task<T>(task: coroutine, args: Option<T>) -> c_int {
     unsafe { coco::add_task(Some(task), in_args) }
 }
 
-fn take_args<T>() -> T {
-    let raw_args: *mut T = unsafe { coco::ctx.read_unaligned().args.cast() };
+fn take_args<T>(arg: *mut libc::c_void) -> T {
+    let raw_args: *mut T = arg.cast();
     match raw_args {
         _ if raw_args == (std::ptr::null_mut() as *mut T) => panic!("no args"),
         _ => unsafe { *Box::from_raw(raw_args) },
     }
 }
 
-fn see_args<'a, T>() -> &'a T {
-    let _nul: *mut T = std::ptr::null_mut();
-    let raw_args: *mut T = unsafe { coco::ctx.read_unaligned().args.cast() };
+fn see_args<'a, T>(arg: *mut libc::c_void) -> &'a T {
+    let raw_args: *mut T = arg.cast() ;
     unsafe { raw_args.as_ref().expect("no args") }
 }
 
@@ -61,8 +60,8 @@ fn coco_waitpid(tid: c_int, exit_status: Option<&mut i32>, options: c_uint) -> c
     unsafe { coco::coco_waitpid(tid, in_es, options as c_int) }
 }
 
-extern "C" fn test() {
-    let delay = take_args::<u32>();
+extern "C" fn test(delay: *mut libc::c_void) {
+    let delay = take_args::<u32>(delay);
     for i in 0..10 {
         println!("{} {:?}", i, delay);
         yield_for_ms(delay);
@@ -70,7 +69,7 @@ extern "C" fn test() {
     coco_exit(0);
 }
 
-extern "C" fn kernal() {
+extern "C" fn kernal(_: *mut libc::c_void) {
     let tid0 = add_task(test, Some(250));
     let tid1 = add_task(test, Some(400));
     while coco_waitpid(tid0, None, coco::COCO_WNOHANG) == 0 {coco_yield()}
@@ -78,6 +77,7 @@ extern "C" fn kernal() {
     coco_exit(0);
 }
 
+#[test]
 fn main() {
     println!("Hello, world!");
     coco_start(kernal);

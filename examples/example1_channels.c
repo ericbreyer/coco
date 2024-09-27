@@ -53,6 +53,7 @@ void kernal() {
     int t2 = add_task((coroutine)nats, &arg2);
     printf("Spawn TID's (%d,%d)\n", t1, t2);
 
+    int result = 0;
     coco_while (!(closed(&arg1.c) && closed(&arg2.c))) {
         // if there is a value in a channel, print it
         int val;
@@ -61,7 +62,7 @@ void kernal() {
         for (int i = 0; i < 2; ++i) {
             if (read_ready(csel[i]) && !closed(csel[i])) {
                 extract(int)(csel[i], &val);
-                printf("%d: %d\n", i, val);
+                result += val;
             }
         }
     }
@@ -71,7 +72,12 @@ void kernal() {
     printf("T1 Reaped\n");
     coco_waitpid(t2, NULL, COCO_WNOOPT);
     printf("T2 Reaped\n");
-    coco_exit(0);
+    if (result == 90) {
+        coco_exit(0);
+        printf("Success\n");
+    }
+    printf("Expected 45, got %d\n", result);
+    coco_exit(1);
 }
 
 // start the scheduler with the main task

@@ -164,7 +164,7 @@ void kernal(int *port) {
          * Echo lines of text until the client closes its end of the
          * connection.
          */
-        add_task((coroutine)handle, connfd);
+        add_task(AS_COROUTINE(handle), (void *)(uintptr_t)connfd);
         // echo(connfd);
         // echo(connfd);
     }
